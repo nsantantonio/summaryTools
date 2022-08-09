@@ -11,10 +11,10 @@
 #' @export
 recodeLoc <- function(loc, locCode = NULL, locPattern = NULL){
 	if(is.null(locCode)){
-		locCode <- c("BLAVA", "WARVA", "PNTVA", "BLSVA", "HOLVA", "ORGVA", "SHVVA", "NKTVA")
+		locCode <- c("BLAVA", "WARVA", "PNTVA", "BLSVA", "HOLVA", "ORGVA", "SHVVA", "NKTVA", "SN")
 	}
 	if(is.null(locPattern)){
-		locPattern <- c("blacksburg", "warsaw", "painter", "blackstone", "holland", "orange", "valley", "kent")
+		locPattern <- c("blacksburg", "warsaw", "painter", "blackstone", "holland", "orange", "valley", "kent", "scab")
 	}
 	for(i in 1:length(locCode)){
 		loc[grepl(locPattern[i], loc, ignore.case = TRUE)] <- locCode[i]

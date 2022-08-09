@@ -10,14 +10,17 @@
 #' @details [fill in details here]
 #' @examples none
 #' @export
-oneYearOneLocSummary <- function(dF, traits, sortby = NULL, allowDupEnt = TRUE, ...){
-
-	traits <- gsub("\\s*\\(.*|\\s*\n", "", traits)
-	trtCols <- grep(paste(traits, collapse = "|"), names(dF))
+oneYearOneLocSummary <- function(dF, traits, sortby = NULL, allowDupEnt = TRUE, unitSep = "|", ...){
+	# dF = testData[[k]]; traits = traits; addInfo = dfInfo(addEntry, by = "Line"); sortby = by; unitSep = "|"; allowDupEnt = TRUE
+	traits <- gsub("\\s*\\(.*|\\s*\n|\\|.*", "", traits)
+	# trtCols <- grep(paste(traits, collapse = "|"), names(dF))
+	trtCols <- sapply(traits, function(x) grep(x, names(dF)))
+	trtCols <- unlist(trtCols[sapply(trtCols, length) > 0])
+	traits <- traits[traits %in% names(trtCols)]
 	traitNames <- names(dF)[trtCols]
 
 	# names(dF)[names(dF) %in% traitNames] <- gsub("\n.*", "", names(dF)[names(dF) %in% traitNames])
-	names(dF)[names(dF) %in% traitNames] <- trimws(gsub("\n.*|\\(.*", "", names(dF)[names(dF) %in% traitNames]))
+	names(dF)[names(dF) %in% traitNames] <- trimws(gsub("\n.*|\\(.*|\\|.*", "", names(dF)[names(dF) %in% traitNames]))
 
 	trtnu <- cleanTraitNames(traitNames)
 
@@ -30,7 +33,7 @@ oneYearOneLocSummary <- function(dF, traits, sortby = NULL, allowDupEnt = TRUE, 
 
 		dfj <- dF[dF$Trial == j,]
 
-		if(any(table(dfj$Line) > 1)){
+		if(any(table(dfj$Line) > 1) & any(!is.na(dfj[trtCols]))){
 
 			lineVar <- names(dfj)[grep("^line", names(dfj), ignore.case = TRUE)] 
 			entVar <- names(dfj)[grep("^ent", names(dfj), ignore.case = TRUE)]
@@ -54,16 +57,18 @@ oneYearOneLocSummary <- function(dF, traits, sortby = NULL, allowDupEnt = TRUE, 
 			sortByTrt <- NULL
 			for(i in traits){
 				
-				message(paste0("Running analyses for trial:", j, " trait:", i))
 				dfij <- whichTrials(dfj, i)
 				dfij <- dfij[!is.na(dfij[[i]]),] # added after last years analysis to deal with traits measured in one loc, one block. 
 				if(nrow(dfij) == 0){
+					message(paste0("No records for trial: ", j, " trait: ", i, ". Skipping to next trait..."))
 					next
+				} else {
+					message(paste0("Running analyses for trial: ", j, " trait: ", i))
 				}
 
 				whichNameUnit <- which(traits == i)
 				# whichNameUnit <- grep(i, traitNames)
-				traitNameUnit <- trimws(paste(sapply(trtnu, "[[", whichNameUnit), collapse = " "))
+				traitNameUnit <- trimws(paste(sapply(trtnu, "[[", whichNameUnit), collapse = unitSep))
 				if(!is.null(sortby)){
 					if(length(grep(sortby, i, ignore.case = TRUE))) {
 						sortByTrt <- traitNameUnit
@@ -84,12 +89,12 @@ oneYearOneLocSummary <- function(dF, traits, sortby = NULL, allowDupEnt = TRUE, 
 						mixFormi <- "~ Trial + (1|Trial:Bloc) + (1|Line)"
 					}
 
-					form <- formula(paste0(i, fixFormi))
+					form <- formula(paste0("`", i, "`", fixFormi))
 					fixedFit <- lm(form, data = dfij)
 
 					BLUE[[traitNameUnit]] <- fitlsmeans(form, "Line", data = dfij)
 
-					rform <- formula(paste0(i, mixFormi))
+					rform <- formula(paste0("`", i, "`", mixFormi))
 					BLUP[[traitNameUnit]] <- fitBlupH2(rform, "Line", addMu = TRUE, data = dfij)
 
 				} else {
@@ -105,17 +110,23 @@ oneYearOneLocSummary <- function(dF, traits, sortby = NULL, allowDupEnt = TRUE, 
 				
 			}
 
-			lsmeansTable <- makeBLUtab(BLUE, sortby = sortByTrt, ...)
-			blupTable <- makeBLUtab(BLUP, sortby = sortByTrt, ...)
-			names(lsmeansTable)[names(lsmeansTable) == "effect"] <- "Line"
-			names(blupTable)[names(blupTable) == "effect"] <- "Line"
-			estL[[j]] <- list(BLUE = lsmeansTable, BLUP = blupTable)
+			if(length(BLUE)){			
+				lsmeansTable <- makeBLUtab(BLUE, sortby = sortByTrt, ...)
+				blupTable <- makeBLUtab(BLUP, sortby = sortByTrt, ...)
+				names(lsmeansTable)[names(lsmeansTable) == "effect"] <- "Line"
+				names(blupTable)[names(blupTable) == "effect"] <- "Line"
+				if (is.null(sortByTrt) & entVar %in% names(lsmeansTable)) {
+					lsmeansTable <- lsmeansTable[order(lsmeansTable[[entVar]]),]
+					blupTable <- blupTable[order(blupTable[[entVar]]),]
+				}
+
+				estL[[j]] <- list(BLUE = lsmeansTable, BLUP = blupTable)
+			} else {
+				message(paste0(unique(dfj$Trial), " has no numeric phenotypes. Returning nothing"))
+			}
 		} else {
 			message(paste0(unique(dfj$Trial), " is an unreplicated trial. Returning nothing"))
 		}
 	}
 	return(estL)
 }
-
-
-

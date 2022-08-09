@@ -4,7 +4,8 @@
 \alias{cleanHarvM}
 \title{cleanHarvM function}
 \usage{
-cleanHarvM(hmi, lbs = TRUE, forgotCycleThreshold = 0.2, qnt = 0.99)
+cleanHarvM(hmi, lbs = TRUE, forgotCycleThreshold = 0.2, qnt = 0.99,
+  keepCols = NULL)
 }
 \arguments{
 \item{hmi}{[value]}

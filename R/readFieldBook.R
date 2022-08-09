@@ -13,6 +13,7 @@
 #' @examples none
 #' @export
 readFieldBook <- function(path, year, testName = NULL, sheets = NULL, colOrder = NULL, scoreTraits = NULL){
+	# path = paste0(paperfbDir, j); year = yr; testName = i; colOrder = tmplOrder; sheets = NULL; scoreTraits = NULL
 	require(readxl)
 	if(is.null(sheets)) {
 		sheets <- excel_sheets(path)
@@ -26,6 +27,7 @@ readFieldBook <- function(path, year, testName = NULL, sheets = NULL, colOrder =
 	for(l in sheets) {
 		loc <- recodeLoc(l)
 		fb <- suppressMessages(as.data.frame(read_excel(path, sheet = l)))
+		names(fb) <- gsub("\\\r\\\n", "\n", names(fb))
 		if(length(fb) == 0){
 			next
 		}
@@ -42,8 +44,14 @@ readFieldBook <- function(path, year, testName = NULL, sheets = NULL, colOrder =
 		fb[["plot_name"]] <- paste(testName, year, loc, plotNo, sep = "_")
 		fbclean <- cleanScores(fb = fb[c("plot_name", colsi)], scoreTraits = scoreTraits)
 		fieldNotes <- names(fb)[grep("comment|note", names(fb), ignore.case = TRUE)]
-		if(length(fieldNotes)) fbclean[[fieldNotes]] <- fb[[fieldNotes]]
-		fbL[[loc]] <- fbclean
+		if(length(fieldNotes) == 1) {
+			fbclean[[fieldNotes]] <- fb[[fieldNotes]]
+		} else if(length(fieldNotes) > 1) {
+			fbclean[["Notes"]] <- do.call(paste, c(fb[fieldNotes], sep=", "))
+		}
+		names(fbclean)[names(fbclean) == "Ent"] <- "Entry"
+		names(fbclean)[names(fbclean) == "Bloc"] <- "Block"
+		fbL[[paste(testName, year, loc, sep = "_")]] <- fbclean
 	}
 
 	allCols <- Reduce(union, lapply(fbL, names))
@@ -53,5 +61,6 @@ readFieldBook <- function(path, year, testName = NULL, sheets = NULL, colOrder =
 			fbL[[i]][[j]] <- NA
 		}
 	}
+
 	return(fbL)
 }

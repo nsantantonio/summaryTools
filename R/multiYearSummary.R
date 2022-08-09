@@ -15,11 +15,13 @@ multiYearSummary <- function(dF, traits, locs = NULL, sortby = NULL, allowDupEnt
 	
 	if(any(table(dF$Line) > 1)){
 
-		traits <- gsub("\\s*\\(.*|\\s*\n", "", traits)
-		trtCols <- grep(paste(traits, collapse = "|"), names(dF))
+		traits <- gsub("\\s*\\(.*|\\s*\n|\\|.*", "", traits)
+		trtCols <- sapply(traits, function(x) grep(x, names(dF)))
+		trtCols <- unlist(trtCols[sapply(trtCols, length) > 0])
+		traits <- traits[traits %in% names(trtCols)]
 		traitNames <- names(dF)[trtCols]
 
-		names(dF)[names(dF) %in% traitNames] <- trimws(gsub("\n.*|\\(.*", "", names(dF)[names(dF) %in% traitNames]))
+		names(dF)[names(dF) %in% traitNames] <- trimws(gsub("\n.*|\\(.*|\\|.*", "", names(dF)[names(dF) %in% traitNames]))
 
 		trtnu <- cleanTraitNames(traitNames)
 
@@ -85,12 +87,12 @@ multiYearSummary <- function(dF, traits, locs = NULL, sortby = NULL, allowDupEnt
 						mixFormi <- paste0("~ Trial + (1|Trial:", blockName, ") + (1|Line)")
 					}
 
-					form <- formula(paste0(i, fixFormi))
+					form <- formula(paste0("`", i, "`", fixFormi))
 					fixedFit <- lm(form, data = dfi)
 
 					BLUE[[traitNameUnit]] <- fitlsmeans(form, "Line", data = dfi)
 
-					rform <- formula(paste0(i, mixFormi))
+					rform <- formula(paste0("`", i, "`", mixFormi))
 					BLUP[[traitNameUnit]] <- fitBlupH2(rform, "Line", addMu = TRUE, data = dfi)
 				} else {
 					unr <- dfi[[i]]

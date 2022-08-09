@@ -4,7 +4,7 @@
 \alias{writeFieldBook}
 \title{writeFieldBook function}
 \usage{
-writeFieldBook(testDf, traits, keepCols = NULL)
+writeFieldBook(testDf, traits, keepCols = NULL, unitSep = "|")
 }
 \arguments{
 \item{testDf}{[value]}

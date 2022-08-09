@@ -4,7 +4,7 @@
 \alias{cleanScores}
 \title{cleanScores function}
 \usage{
-cleanScores(fb, scoreTraits = NULL)
+cleanScores(fb, scoreTraits = NULL, zeroThreshold = 0.5)
 }
 \arguments{
 \item{fb}{[value]}

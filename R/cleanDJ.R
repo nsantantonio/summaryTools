@@ -14,9 +14,10 @@
 #' @details [fill in details here]
 #' @examples none
 #' @export
-cleanDJ <- function(djdf, year, testName = NULL, minTW = 56, maxTW = 63, moistTooHighNA = TRUE, outsideTWrangeNA = FALSE, barley = FALSE){
+cleanDJ <- function(djdf, year, testName = NULL, minTW = 55, maxTW = 64, moistThresh = 16, moistTooHighNA = TRUE, outsideTWrangeNA = FALSE, barley = FALSE){
+	# djdf = djij; testName = i; year = yr; minTW = 55; maxTW = 64; moistThresh = 16; moistTooHighNA = TRUE; outsideTWrangeNA = FALSE; barley = FALSE
 	if(barley){
-		if(minTW == 56){
+		if(minTW == 55){
 			minTW <- 40
 		}
 	}
@@ -47,10 +48,17 @@ cleanDJ <- function(djdf, year, testName = NULL, minTW = 56, maxTW = 63, moistTo
 	}
 	djdf$Date.Time <- formatTime(djdf$Date.Time, year)
 
+	djdf$Moisture[is.na(djdf$Moisture)] <- 0
+	if(any(djdf$Moisture == 0) | any(djdf$Moisture > 25)){
+		message("The following records have bad moisture readings and will be dropped:")
+		print(djdf[djdf$Moisture <= 0 | djdf$Moisture >= 25, ])
+		djdf <- djdf[djdf$Moisture > 0 & djdf$Moisture < 25, ]
+	}
 
 	dup1 <- which(duplicated(djdf$Sample.ID))
 	dup2 <- sort({nrow(djdf):1}[which(duplicated(rev(djdf$Sample.ID)))])
-	dups <- c(dup1, dup2)
+	# dups <- c(dup1, dup2)
+	dups <- sort(c(dup1, dup2))
 
 	fixedTWforHighMoist <- NULL
 	if(length(dups)){
@@ -59,33 +67,34 @@ cleanDJ <- function(djdf, year, testName = NULL, minTW = 56, maxTW = 63, moistTo
 		latestRec <- list()
 		for(j in unique(djdup$Sample.ID)){
 			djdupj <- djdup[djdup$Sample.ID == j,]
-			latestRec[[j]] <- djdupj[which(djdupj$Date.Time == max(djdupj$Date.Time)),]			
+			latestRec[[j]] <- djdupj[which(djdupj$Date.Time == max(djdupj$Date.Time)),]
 			# djdupj$Date.Time[1] <- djdupj$Date.Time[2] 
 			if(nrow(latestRec[[j]]) > 1){
 				message("\nMore than one record with the latest time. Selecting record with better Moisture and Test weight")
 				print(latestRec[[j]][, c("Sample.ID", "Moisture", "Weight", "Date.Time")])
-				keep <- which(latestRec[[j]]$Moisture < 16 & latestRec[[j]]$Weight >= minTW & latestRec[[j]]$Weight <= maxTW)
+				keep <- which(latestRec[[j]]$Moisture < moistThresh & latestRec[[j]]$Weight >= minTW & latestRec[[j]]$Weight <= maxTW)
 				if(length(keep) > 1) {
 					message("\nBoth records meet minTW or maxTW requirements. Selecting first record...")
 					latestRec[[j]] <- latestRec[[j]][1, ]
 				} else if(length(keep) == 0){
 					message("\nNeither record meets minTW or maxTW requirements. Please change requirements and rerun.")
+					latestRec[[j]] <- latestRec[[j]][rep(FALSE, nrow(latestRec[[j]])),]
 				} else {
 					cat("Keeping:\n\n")
 					print(latestRec[[j]][keep, c("Sample.ID", "Moisture", "Weight", "Date.Time")])
 					latestRec[[j]] <- latestRec[[j]][keep, ]
 				}
 			}
-			if(any(djdupj$Moisture > 16)){
+			if(any(djdupj$Moisture > moistThresh)){
 				if(nrow(djdupj) > 2){
 					message("\nMore than two records for a plot with high moisture. The latest record was was used for test weight, please check that this is correct.")
 					print(djdupj[c("Sample.ID", "Moisture", "Weight", "Date.Time")])
 				}
 				message("\nMoisture too high for first run! keeping moisture reading for yield calc, replacing test weight\n the following is the corrected record:\n")
-				mrec <- djdupj[djdupj$Moisture > 16,]
+				mrec <- djdupj[djdupj$Moisture > moistThresh,]
 				if(nrow(mrec) > 1) {
-					message("More than one duplicate record with moisture over 16%! Using latest record with high moisture.")
-					mrec <- mrec[which(mrec$Date.Time == max(mrec$Date.Time)),]			
+					message(paste0("More than one duplicate record with moisture over ", moistThresh, "%! Using latest record with high moisture."))
+					mrec <- mrec[which(mrec$Date.Time == max(mrec$Date.Time)),][1,]	
 				}
 				# mrec[, "Weight"] <- latestRec[[j]][["Weight"]]
 				mrec[, "Weight"] <- unique(latestRec[[j]][["Weight"]])
@@ -100,9 +109,9 @@ cleanDJ <- function(djdf, year, testName = NULL, minTW = 56, maxTW = 63, moistTo
 	}
 	row.names(djclean) <- NULL
 
-	highMoistureNotCorrected <- djclean$Moisture >= 16 & !djclean$Sample.ID %in% fixedTWforHighMoist
+	highMoistureNotCorrected <- djclean$Moisture >= moistThresh & !djclean$Sample.ID %in% fixedTWforHighMoist
 	if(any(highMoistureNotCorrected)){
-		message("\nThe following records have a moisture > 16% without a second record to correct TW:")
+		message(paste0("\nThe following records have a moisture > ", moistThresh, "% without a second record to correct TW:"))
 		print(djclean[highMoistureNotCorrected, c("Sample.ID", "Moisture", "Weight", "Date.Time")])
 		if(moistTooHighNA){
 			message("Setting Test Weight to missing...")

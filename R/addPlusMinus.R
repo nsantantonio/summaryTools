@@ -12,9 +12,9 @@ addPlusMinus <- function(smry, traits){
 	if(is.list(smry) & !is.data.frame(smry)) smry <- smry$BLUE
 	rownames(smry) <- smry$Line
 
-	avg <- grep("mean", smry$Line, ignore.case = TRUE)
-	CV <- grep("C\\.*V", smry$Line, ignore.case = TRUE)
-	LSD <- grep("L\\.*S\\.*D", smry$Line, ignore.case = TRUE)
+	avg <- grep("^mean$", smry$Line, ignore.case = TRUE)
+	CV <- grep("^C\\.*V$", smry$Line, ignore.case = TRUE)
+	LSD <- grep("^L\\.*S\\.*D$", smry$Line, ignore.case = TRUE)
 
 	stat <- smry[c(avg, LSD, CV),]
 	rownames(stat) <- c("mean", "LSD", "CV")
@@ -31,7 +31,7 @@ addPlusMinus <- function(smry, traits){
 	statL <- list()
 	counter <- 1
 	for(i in traits){
-		bi <- data.frame(BLUE[i]) 
+		bi <- data.frame(BLUE[i], check.names = FALSE)
 		bi[[paste0(i, "_sig")]] <- ""
 		if(!is.na(stat["LSD", i])){
 			bi[[paste0(i, "_sig")]][BLUE[[i]] > stat["mean", i] + stat["LSD", i]] <- "+"
@@ -39,12 +39,12 @@ addPlusMinus <- function(smry, traits){
 		}
 		trtL[[counter]] <- bi
 
-		si <- data.frame(stat[i]) 
+		si <- data.frame(stat[i], check.names = FALSE)
 		si[[paste0(i, "_sig")]] <- ""
 		statL[[counter]] <- si
 		counter <- counter + 1
 	}
-	BLUEpm <- data.frame(BLUEinfo, do.call(cbind,trtL))
-	statpm <- data.frame(statinfo, do.call(cbind,statL))
+	BLUEpm <- data.frame(BLUEinfo, do.call(cbind,trtL), check.names = FALSE)
+	statpm <- data.frame(statinfo, do.call(cbind,statL), check.names = FALSE)
 	rbind(BLUEpm, statpm)
 }

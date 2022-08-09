@@ -5,7 +5,7 @@
 \title{oneYearOverLocSummary function}
 \usage{
 oneYearOverLocSummary(dF, traits, locs = NULL, sortby = NULL,
-  allowDupEnt = TRUE, ...)
+  allowDupEnt = TRUE, unitSep = "|", ...)
 }
 \arguments{
 \item{dF}{[value]}

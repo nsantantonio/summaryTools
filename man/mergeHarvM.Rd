@@ -4,7 +4,7 @@
 \alias{mergeHarvM}
 \title{mergeHarvM function}
 \usage{
-mergeHarvM(hmL, sclL, djL)
+mergeHarvM(hmL, sclL, djL, consensus = TRUE)
 }
 \arguments{
 \item{hmL}{[value]}
@@ -12,6 +12,8 @@ mergeHarvM(hmL, sclL, djL)
 \item{sclL}{[value]}
 
 \item{djL}{[value]}
+
+\item{consensus}{Should a consensus be used to merge moisture and test weight data from dickey john and harvest master?}
 }
 \value{
 [value]

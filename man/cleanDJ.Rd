@@ -4,8 +4,9 @@
 \alias{cleanDJ}
 \title{cleanDJ function}
 \usage{
-cleanDJ(djdf, year, testName = NULL, minTW = 56, maxTW = 63,
-  moistTooHighNA = TRUE, outsideTWrangeNA = FALSE, barley = FALSE)
+cleanDJ(djdf, year, testName = NULL, minTW = 55, maxTW = 64,
+  moistThresh = 16, moistTooHighNA = TRUE, outsideTWrangeNA = FALSE,
+  barley = FALSE)
 }
 \arguments{
 \item{djdf}{[value]}

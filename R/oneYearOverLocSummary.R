@@ -11,15 +11,17 @@
 #' @details [fill in details here]
 #' @examples none
 #' @export
-oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortby = NULL, allowDupEnt = TRUE, ...){
-
+oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortby = NULL, allowDupEnt = TRUE, unitSep = "|", ...){
+# dF = testData[[k]]; traits = traits; addInfo = dfInfo(addEntry, by = "Line"); sortby = by; allowDupEnt = TRUE; locs = NULL; unitSep = "|"
 	if(any(table(dF$Line) > 1)){
 		
-		traits <- gsub("\\s*\\(.*|\\s*\n", "", traits)
-		trtCols <- grep(paste(traits, collapse = "|"), names(dF))
+		traits <- gsub("\\s*\\(.*|\\s*\n|\\|.*", "", traits)
+		trtCols <- sapply(traits, function(x) grep(x, names(dF)))
+		trtCols <- unlist(trtCols[sapply(trtCols, length) > 0])
+		traits <- traits[traits %in% names(trtCols)]
 		traitNames <- names(dF)[trtCols]
 
-		names(dF)[names(dF) %in% traitNames] <- trimws(gsub("\n.*|\\(.*", "", names(dF)[names(dF) %in% traitNames]))
+		names(dF)[names(dF) %in% traitNames] <- trimws(gsub("\n.*|\\(.*|\\|.*", "", names(dF)[names(dF) %in% traitNames]))
 		# names(dF)[names(dF) %in% traitNames] <- gsub("\n.*", "", names(dF)[names(dF) %in% traitNames])
 
 		trtnu <- cleanTraitNames(traitNames)
@@ -46,7 +48,7 @@ oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortby = NULL, allowD
 		BLUE <- list()
 		unrepTrait <- list()
 		for(i in traits){
-			message(paste0("Running analyses for trial:", unique(gsub("_[^_]+$", "", dF$Trial)), " trait:", i))
+			message(paste0("Running analyses for trial: ", unique(gsub("_[^_]+$", "", dF$Trial)), " trait: ", i))
 			# message(paste0("Running analyses for trait:", i))
 			dfi <- whichTrials(dF, i)
 			dfi <- dfi[!is.na(dfi[[i]]),] # added after last years analysis to deal with traits measured in one loc, one block. 
@@ -54,7 +56,7 @@ oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortby = NULL, allowD
 			if(nrow(dfi) > 0){
 				whichNameUnit <- which(traits == i)
 				# whichNameUnit <- grep(i, traitNames)
-				traitNameUnit <- trimws(paste(sapply(trtnu, "[[", whichNameUnit), collapse = " "))
+				traitNameUnit <- trimws(paste(sapply(trtnu, "[[", whichNameUnit), collapse = unitSep))
 				if(!is.null(sortby)){
 					if(length(grep(sortby, i, ignore.case = TRUE))) {
 						sortByTrt <- traitNameUnit
@@ -78,17 +80,21 @@ oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortby = NULL, allowD
 						mixFormi <- "~ Trial + (1|Trial:Bloc) + (1|Line)"
 					}
 
-					form <- formula(paste0(i, fixFormi))
+					form <- formula(paste0("`", i, "`", fixFormi))
 					fixedFit <- lm(form, data = dfi)
 
 					BLUE[[traitNameUnit]] <- fitlsmeans(form, "Line", data = dfi)
 
-					rform <- formula(paste0(i, mixFormi))
+					rform <- formula(paste0("`", i, "`", mixFormi))
 					BLUP[[traitNameUnit]] <- fitBlupH2(rform, "Line", addMu = TRUE, data = dfi)
 				} else {
 					unr <- dfi[[i]]
 					names(unr) <- dfi[["Line"]]
-					if(!all(names(unr) == names(BLUE[[1]][[1]]))) unr <- unr[names(BLUE[[1]][[1]])]
+					if(length(BLUE) == 0) {
+						unr <- unr[levels(dfi[["Line"]])]
+					} else {
+						if(!all(names(unr) == names(BLUE[[1]][[1]]))) unr <- unr[names(BLUE[[1]][[1]])]
+					}
 					BLUE[[traitNameUnit]] <- list(BLUE = unr, mean = mean(unr), CV = NA, LSD = NA)
 					BLUP[[traitNameUnit]] <- list(BLUP = unr, mean = mean(unr), h2 = NA, sigma = NA)
 					message(paste0(i, " is unreplicated (only scored in one environment and/or rep). Returning raw phenotypes"))
@@ -100,6 +106,11 @@ oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortby = NULL, allowD
 		blupTable <- makeBLUtab(BLUP, sortby = sortByTrt, ...)
 		names(lsmeansTable)[names(lsmeansTable) == "effect"] <- "Line"
 		names(blupTable)[names(blupTable) == "effect"] <- "Line"
+		if (is.null(sortByTrt) & entVar %in% names(lsmeansTable)) {
+			lsmeansTable <- lsmeansTable[order(lsmeansTable[[entVar]]),]
+			blupTable <- blupTable[order(blupTable[[entVar]]),]
+		}
+
 		return(list(BLUE = lsmeansTable, BLUP = blupTable))
 	} else {
 		message(paste0(unique(dF$Trial), " is an unreplicated trial. Returning nothing"))

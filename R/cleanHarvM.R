@@ -10,13 +10,17 @@
 #' @details [fill in details here]
 #' @examples none
 #' @export
-cleanHarvM <- function(hmi, lbs = TRUE, forgotCycleThreshold = 0.2, qnt = 0.99){
-	
+cleanHarvM <- function(hmi, lbs = TRUE, forgotCycleThreshold = 0.2, qnt = 0.99, keepCols = NULL){
+	# lbs = TRUE; forgotCycleThreshold = 0.2; qnt = 0.99; keepCols = NULL
 	hmi <- hmi[order(hmi[[grep("Sequence", names(hmi))]]),]
-	cols <- sapply(c("^plot.id", "^moisture", "^weight", "^test", "note"), function(x) grep(x, names(hmi), ignore.case = TRUE))
+	head(hmi) 
+	hmi <- hmi[!hmi[[grep("Line", names(hmi))]] %in% "fill",]
+	cols <- sapply(c("^plot.*id", "^moisture", "^weight", "^test", "note"), function(x) grep(x, names(hmi), ignore.case = TRUE))
 	hm <- hmi[cols]
 	names(hm) <- c("plot_name", "Moisture", "netWeight", "TestWeight", "Notes")
+	if(!is.null(keepCols)) hm[keepCols] <- hmi[keepCols]
 	badCycle <- which(hm[["netWeight"]] < forgotCycleThreshold)
+
 
 	if(length(badCycle)){
 		qthresh <- quantile(hm[, "netWeight"], probs = qnt, na.rm = TRUE)
@@ -24,7 +28,10 @@ cleanHarvM <- function(hmi, lbs = TRUE, forgotCycleThreshold = 0.2, qnt = 0.99){
 		for (j in badCycle){
 			# hm[c(j-1, j), c("netWeight", "Moisture", "TestWeight")] <- NA
 			message("the following records were assumed to be a forgotten harv master cycle and will be set to missing. ")
-			if(hm[j-1, c("netWeight")] >= qthresh) {
+			if(j == 1){
+				message("You sent the very first plot straight to the grain tank, didnt you... Good job!")
+				print(hm[j,])
+			} else if(hm[j-1, c("netWeight")] >= qthresh) {
 				print(hm[c(j-1, j),])
 				hm[j-1, c("netWeight")] <- NA
 			} else {

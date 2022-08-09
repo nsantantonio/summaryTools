@@ -4,12 +4,15 @@
 \alias{cleanTraitNames}
 \title{cleanTraitNames function}
 \usage{
-cleanTraitNames(traitNames, addUnits = TRUE)
+cleanTraitNames(traitNames, addUnits = FALSE,
+  splitPattern = "\\n|\\\\|")
 }
 \arguments{
 \item{traitNames}{[value]}
 
 \item{addUnits}{[value]. Default is TRUE}
+
+\item{split}{[value]. Pattern that separates triat name from units or ontology}
 }
 \value{
 [value]

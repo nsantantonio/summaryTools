@@ -10,7 +10,8 @@
 #' @examples none
 #' @export
 formatPrintSummary <- function(smry, infoCols = "Line", tex = TRUE){
-	require(xtable)
+	# smry = sumipm; infoCols = c("Line", "Entry"); tex = FALSE
+	if(tex) require(xtable)
 	info <- as.matrix(smry[infoCols])
 	traits <- grep("_sig", names(smry)) - 1
 	sig <- grep("_sig", names(smry))

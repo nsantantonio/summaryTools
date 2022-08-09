@@ -5,7 +5,7 @@
 \title{oneYearOneLocSummary function}
 \usage{
 oneYearOneLocSummary(dF, traits, sortby = NULL, allowDupEnt = TRUE,
-  ...)
+  unitSep = "|", ...)
 }
 \arguments{
 \item{dF}{[value]}

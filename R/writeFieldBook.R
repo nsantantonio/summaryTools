@@ -9,12 +9,12 @@
 #' @details [fill in details here]
 #' @examples none
 #' @export
-writeFieldBook <- function(testDf, traits, keepCols = NULL){
+writeFieldBook <- function(testDf, traits, keepCols = NULL, unitSep = "|"){
 
 	if(is.null(keepCols)){
 		keepCols <- c("Year", "Location", "Trial", "^plot_name$", "^plot$", "^bloc", "^ent", "^line$", "^pedigree$")
 	}
-	trtCols <- grep(paste(traits, collapse = "|"), names(testDf))
+	trtCols <- grep(paste(gsub("\\|", "\\\\|", traits), collapse = "|"), names(testDf))
 	traitNames <- names(testDf)[trtCols]
 
 	trtnu <- cleanTraitNames(traitNames)
@@ -22,10 +22,10 @@ writeFieldBook <- function(testDf, traits, keepCols = NULL){
 	trtOrder <- NULL
 	traitNameUnit <- NULL
 	for(i in traits){
-		whichNameUnit <- grep(i, traitNames)
+		whichNameUnit <- grep(gsub("\\|", "\\\\|", i), traitNames)
 		if(length(whichNameUnit)){
-			traitNameUnit <- c(traitNameUnit, paste(sapply(trtnu, "[[", whichNameUnit), collapse = " "))
-			trtOrder <- c(trtOrder, grep(i, names(testDf)))
+			traitNameUnit <- c(traitNameUnit, paste(sapply(trtnu, "[[", whichNameUnit), collapse = unitSep))
+			trtOrder <- c(trtOrder, grep(gsub("\\|", "\\\\|", i), names(testDf)))
 		}
 	}
 	names(testDf)[trtOrder] <- traitNameUnit
