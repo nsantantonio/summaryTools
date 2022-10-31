@@ -6,7 +6,7 @@
 #' @param charTrtCols character vector with column numbers as elements and names(charTrtCols) as names of traits 
 #' @return line entry trial and contactenated notes across plots for each 
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 compileNotes <- function(dfc, charTrtCols){
 	# dfc <- dfj

@@ -6,7 +6,7 @@
 #' @param by [value]
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 dfInfo <- function(dF, by){
 	nam <- dF[[by]]

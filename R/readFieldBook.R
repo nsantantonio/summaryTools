@@ -10,7 +10,7 @@
 #' @param scoreTraits [value]. Default is NULL
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 readFieldBook <- function(path, year, testName = NULL, sheets = NULL, colOrder = NULL, scoreTraits = NULL){
 	# path = paste0(paperfbDir, j); year = yr; testName = i; colOrder = tmplOrder; sheets = NULL; scoreTraits = NULL

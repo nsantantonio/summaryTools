@@ -8,7 +8,7 @@
 #' @param scaleb should the index be scaled to 1? default is TRUE. 
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 BLUEindex <- function(envMeans, cv, weights = 1, scaleb = TRUE){
 	BLUE <- as.matrix(envMeans)

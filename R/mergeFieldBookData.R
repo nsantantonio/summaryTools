@@ -10,7 +10,7 @@
 #' @param year [value]. Default is NULL
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialDesigns = NULL, trialPassRange = NULL, sqft = 45, testName = NULL, year = NULL, inclPed = TRUE, ...){
 	# fb = fbL[[i]]; dj = scldj[["dj"]][[i]]; scl = scldj[["scl"]][[i]]; paperfb = pfbL[[i]]; trialDesigns = trials[grep(paste0("^", i), names(trials))]; trialPassRange = allFields; sqft = 45; testName = i; year = yr; barley = isBarley; inclPed = TRUE

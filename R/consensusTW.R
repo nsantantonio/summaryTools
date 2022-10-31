@@ -8,7 +8,7 @@
 #' @param barley logical. Is barley?
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 consensusTW <- function(djhm, defaultDJ = FALSE, TWrange = c(55, 64), barley = FALSE, ...){
 	if(barley & TWrange[1] == 55) {

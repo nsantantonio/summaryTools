@@ -6,7 +6,7 @@
 #' @param trait [value]
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 whichTrials <- function(dF, trait){
 	hasRec <- unique(dF$Trial[!is.na(dF[[trait]])])

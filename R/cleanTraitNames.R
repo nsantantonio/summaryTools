@@ -6,7 +6,7 @@
 #' @param splitPattern [value]. Pattern that separates triat name from units or ontology
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 cleanTraitNames <- function(traitNames, splitPattern = "\n|\\|"){
 	#### this requires that trait names have the form trait\nunit. It will fail wihout the new line!

@@ -10,7 +10,7 @@
 #' @param exportFullFB logical. Should the entire fieldbook be exported (i.e. no duplicate or missing data records removed)? default is  FALSE 
 #' @return data.frame of processed and sorted field book records
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 readFieldBookDB <- function(path, ontology = NULL, printTraitTable = FALSE, exportNA = FALSE, printDup = FALSE, exportFullFB = FALSE){
 	# c("plot_name", "trait", "value", "timestamp", "person", "location", "number")

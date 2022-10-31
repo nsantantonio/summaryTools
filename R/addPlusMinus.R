@@ -6,7 +6,7 @@
 #' @param traits list of traits to provide LSD from mean to 
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 addPlusMinus <- function(smry, traits){
 	if(is.list(smry) & !is.data.frame(smry)) smry <- smry$BLUE

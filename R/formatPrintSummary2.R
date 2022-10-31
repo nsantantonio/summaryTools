@@ -7,7 +7,7 @@
 #' @param tex should a latex table be printed to stdout?
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 formatPrintSummary2 <- function(smry, infoCols = "Line", tex = TRUE, sortBy = NULL, loHi = FALSE, decimals = c(3, 4)){
 	# smry = sumipm; infoCols = c("Line", "Entry"); tex = FALSE; sortBy = NULL; loHi = FALSE; decimals = c(3,4)

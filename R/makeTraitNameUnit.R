@@ -7,7 +7,7 @@
 #' @param unitSep [value]. Pattern that separates triat name from units or ontology
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 makeTraitNameUnit <- function(traitNames, units, unitSep = "|"){
 

@@ -9,7 +9,7 @@
 #' @param tooLong parameter to determine if the first col name is just a title 
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 readWadeExcel <- function(path, startLine = NULL, stopLine = NULL, keepLSD = FALSE, tooLong = 33, ...){
 	require(readxl)

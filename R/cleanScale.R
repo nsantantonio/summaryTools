@@ -11,7 +11,7 @@
 #' @param rmDup [value]. Default is FALSE
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 cleanScale <- function(scl, year, testName = NULL, tare = NULL, minWt = 500, maxWt = 6000, rmDup = FALSE){
 	headers <- sapply(c("plot", "weight", "tare"), function(x) {grep(x, names(scl), ignore.case = TRUE)})

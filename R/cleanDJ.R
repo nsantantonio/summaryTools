@@ -12,7 +12,7 @@
 #' @param barley [value]. Default is FALSE
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 cleanDJ <- function(djdf, year, testName = NULL, minTW = 55, maxTW = 64, moistThresh = 16, moistTooHighNA = TRUE, outsideTWrangeNA = FALSE, barley = FALSE){
 	# djdf = djij; testName = i; year = yr; minTW = 55; maxTW = 64; moistThresh = 16; moistTooHighNA = TRUE; outsideTWrangeNA = FALSE; barley = FALSE

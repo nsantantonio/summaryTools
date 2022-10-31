@@ -6,7 +6,7 @@
 #' @param nlineHeader number of lines in the header
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 readRegionalExcel <- function(path, nlineHeader = 2, ...){
 	# nlineHeader <- 2

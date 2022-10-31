@@ -5,7 +5,7 @@
 #' @param inches [value]
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 inchToCm <- function(inches){
 	# 2.54 cm per inch
@@ -19,7 +19,7 @@ inchToCm <- function(inches){
 #' @param cm [value]
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 cmToInch <- function(cm){
 	# 2.54 cm per inch
@@ -33,7 +33,7 @@ cmToInch <- function(cm){
 #' @param lbbu [value]
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 lbbutogl <- function(lbbu){
 	# lb / bu * 1 bu / 35.2391 l * 453.592 g / 1 lb
@@ -49,7 +49,7 @@ lbbutogl <- function(lbbu){
 #' @param gl [value]
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 gltolbbu <- function(gl){
 	# 35.2391 liters per bushel
@@ -66,7 +66,7 @@ gltolbbu <- function(gl){
 #' @param awns [value]
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 awnsToScore <- function(awns){
 	if(!all(awns %in% c("A", "TA", "AL"))) stop("Only valid values are 'A' for Awns, 'TA' for tip-awned, and 'AL' for awnless")
@@ -84,7 +84,7 @@ awnsToScore <- function(awns){
 #' @param awnScore [value]
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 scoreToAwns <- function(awnScore){
 	if(!all(awnScore %in% 1:3)) stop("Only valid values are '3' for Awns, '2' for tip-awned, and '1' for awnless")
@@ -102,7 +102,7 @@ scoreToAwns <- function(awnScore){
 #' @param sqft [value]
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 sqftToHectare <- function(sqft){
 	# 0.092903 meters per square foot
@@ -116,7 +116,7 @@ sqftToHectare <- function(sqft){
 #' @param sqft [value]
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 sqftToAcre <- function(sqft){
 	# 43560 sqft per acre
@@ -131,7 +131,7 @@ sqftToAcre <- function(sqft){
 #' @param barley logical. Is it barley? 
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 buToKg <- function(bu, barley = FALSE){
 	if(barley) {
@@ -151,7 +151,7 @@ buToKg <- function(bu, barley = FALSE){
 #' @param barley logical. Is it barley? 
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 kgToBu <- function(kg, barley = FALSE){
 	# 0.45359237 kg / lb = 2.204623 lb / kg
@@ -172,7 +172,7 @@ kgToBu <- function(kg, barley = FALSE){
 #' @param barley logical. Is it barley? 
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 buacToKgha <- function(buac, barley = FALSE){
 	if(barley) {
@@ -194,7 +194,7 @@ buacToKgha <- function(buac, barley = FALSE){
 #' @param barley logical. Is it barley? 
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 kghaToBuac <- function(kgha, barley = FALSE){
 	# 0.45359237 lbs per kilo
@@ -220,7 +220,7 @@ kghaToBuac <- function(kgha, barley = FALSE){
 #' @param barley logical. Is it barley? 
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 correctWeight <- function(weight, moisture, stdMoisture = 13.5, barley = FALSE, ...){
  	if (barley) {
@@ -243,7 +243,7 @@ correctWeight <- function(weight, moisture, stdMoisture = 13.5, barley = FALSE, 
 #' @param barley logical. Is it barley? 
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 lbsToYield <- function(lbs, moisture, sqft, barley = FALSE, ...){ # verified works
 	 if (barley) {
@@ -269,7 +269,7 @@ lbsToYield <- function(lbs, moisture, sqft, barley = FALSE, ...){ # verified wor
 #' @param barley logical. Is it barley? 
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 gramsToYield <- function(g, moisture, sqft = NULL, sqm = NULL, metric = FALSE, barley = FALSE, ...){
 	if(is.null(sqft) & is.null(sqm)){

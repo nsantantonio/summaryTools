@@ -8,7 +8,7 @@
 #' @param digits [value]. Default is 2
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 write.summary <- function(locSum, testName, resultDir, digits = 2, addLSD = FALSE, ...){
 	# locSum = locSummary[[k]][[j]]; testName = j; resultDir = resultDir; digits = 2; addLSD = FALSE

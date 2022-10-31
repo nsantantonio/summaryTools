@@ -8,7 +8,7 @@
 #' @param calcPercMean should PercMean be calculated?
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 addTraitPercRank <- function(smry, trait, keep = "Line", calcPercMean = TRUE, sign = -1, ...){
 	di <- 1:{nrow(smry)-3}

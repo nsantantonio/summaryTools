@@ -7,7 +7,7 @@
 #' @param decreasing should sort be done by decreasing values?
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 sortSummary <- function(smry, trait, decreasing = TRUE){
 	N <- grep("mean", smry$Line, ignore.case = TRUE) - 1

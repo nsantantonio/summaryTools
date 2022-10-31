@@ -5,7 +5,7 @@
 #' @param scl3col [value]
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 make4colScale <- function(scl3col){
 	if(!all(names(scl3col) %in% c("plot_name", "weight", "tare", "Notes"))){

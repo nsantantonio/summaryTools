@@ -10,7 +10,7 @@
 #' @param year [value]. Default is NULL
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 mergeFieldData <- function(fb, dj, scl, sqft = 45, testName = NULL, year = NULL, ...){
 	if(is.null(testName)) {

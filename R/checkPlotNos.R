@@ -7,7 +7,7 @@
 #' @param testName [value]. Default is NULL
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 checkPlotNos <- function(x, type, testName = NULL){
 	if(length(x) == 0){stop("No ", type, " Records! Check input file.")}

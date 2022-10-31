@@ -6,7 +6,7 @@
 #' @param dig1 use 1 digit for these traits that match this regex pattern
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 roundSummary <- function(smry, dig1 = "Test|Yield"){
 	traitCols <- grep("_sig", names(smry))-1

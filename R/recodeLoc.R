@@ -7,7 +7,7 @@
 #' @param locPattern [value]. Default is NULL
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 recodeLoc <- function(loc, locCode = NULL, locPattern = NULL){
 	if(is.null(locCode)){

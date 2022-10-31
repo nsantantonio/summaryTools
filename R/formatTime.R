@@ -6,7 +6,7 @@
 #' @param year [value]
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 formatTime <- function(x, year){
 	time <- gsub(paste0("/", substr(year, 3, 4), "\\s"), paste0("/", year, " "), x)		

@@ -5,7 +5,7 @@
 #' @param tr object of class trialDesign.
 #' @return data.frame with plot_name, trialName, Year, Location, Line, Entry, and Block.
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 trialDesignToDataFrame <- function(tr, inclPed = TRUE) {
 	trialSplit <- strsplit(tr@plotName, "_")

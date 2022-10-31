@@ -6,7 +6,7 @@
 #' @param y second summary to be merged
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 
 mergeSummary <- function(x, y, ...){

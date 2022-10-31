@@ -7,7 +7,7 @@
 #' @param keepCols [value]. Default is NULL
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 writeFieldBook <- function(testDf, traits, keepCols = NULL, unitSep = "|"){
 # testDf = testData[[k]]; traits = traits; keepCols = NULL; unitSep = "|"

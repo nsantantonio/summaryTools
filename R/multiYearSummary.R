@@ -9,7 +9,7 @@
 #' @param allowDupEnt [value]. Default is TRUE
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 multiYearSummary <- function(dF, traits, locs = NULL, sortby = NULL, allowDupEnt = TRUE, blockName = "Bloc", ...){
 	

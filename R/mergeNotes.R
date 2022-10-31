@@ -6,7 +6,7 @@
 #' @param compiled notes across plots for each line, output from compileNotes
 #' @return summary table with notes added, and no stats lost.
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 mergeNotes <- function(BLUtab, notes){
 	# BLUtab <- lsmeansTable; notes <- lineEntNotes

@@ -5,7 +5,7 @@
 #' @param dj3col [value]
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 make9colDJ <- function(dj3col){
 	columnNames <- c("Sample.ID", "Moisture", "Weight", "Temperature", "Product", "Issue.No.", "Customer.ID", "User.ID", "Date.Time")

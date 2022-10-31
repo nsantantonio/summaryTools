@@ -8,7 +8,7 @@
 #' @param consensus Should a consensus be used to merge moisture and test weight data from dickey john and harvest master?
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 mergeHarvM <- function(hmL, sclL, djL, consensus = TRUE){
 	for (i in names(hmL)) {

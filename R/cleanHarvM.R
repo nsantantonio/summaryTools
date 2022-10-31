@@ -8,7 +8,7 @@
 #' @param qnt [value]. Default is 0.99
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 cleanHarvM <- function(hmi, lbs = TRUE, forgotCycleThreshold = 0.2, qnt = 0.99, keepCols = NULL){
 	# lbs = TRUE; forgotCycleThreshold = 0.2; qnt = 0.99; keepCols = NULL

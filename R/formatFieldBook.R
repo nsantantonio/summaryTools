@@ -10,7 +10,7 @@
 #' @param exportFullFB logical. Should the entire fieldbook be exported (i.e. no duplicate or missing data records removed)? default is  FALSE 
 #' @return data.frame of processed and sorted field book records
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 formatFieldBook <- function(fb, year = NULL){
 	canBeNumeric <- function(x) { # taken from https://stackoverflow.com/questions/24129124/how-to-determine-if-a-character-vector-is-a-valid-numeric-or-integer-vector

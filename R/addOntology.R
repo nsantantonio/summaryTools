@@ -6,7 +6,7 @@
 #' @param ontology [value]. Default is TRUE
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 addOntology <- function(testData, ontology){
 	if(class(testData) == "data.frame"){

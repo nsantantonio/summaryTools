@@ -8,7 +8,7 @@
 #' @param allowDupEnt [value]. Default is TRUE
 #' @return [value]
 #' @details [fill in details here]
-#' @examples none
+#' @examples # none
 #' @export
 oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, allowDupEnt = TRUE, unitSep = "|", verbose = FALSE, ...){
 	# dF = testData[[k]]; traits = qtraits; addInfo = dfInfo(addEntry, by = "Line"); sortHiLo = by; sortLoHi = NULL; unitSep = "|"; allowDupEnt = TRUE
