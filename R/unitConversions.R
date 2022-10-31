@@ -139,9 +139,76 @@ buToKg <- function(bu, barley = FALSE){
 	} else {
 		lbs <- bu * 60 
 	}
-	# 0.45359237 lbs per kilo
+	# 0.45359237 kg / lb
 	lbs * 0.45359237
 }
+
+#' kgToBu function
+#'
+#' function to convert bushels to kilograms based on standard testweight (60 for wheat and 48 for barley)
+#'
+#' @param kg numeric. Bushels.
+#' @param barley logical. Is it barley? 
+#' @return [value]
+#' @details [fill in details here]
+#' @examples none
+#' @export
+kgToBu <- function(kg, barley = FALSE){
+	# 0.45359237 kg / lb = 2.204623 lb / kg
+	lbs <- kg / 0.45359237
+	if(barley) {
+		bu <- lbs / 48
+	} else {
+		bu <- lbs / 60 
+	}
+	return(bu)
+}
+
+#' buacToKgha function
+#'
+#' function to convert bushels per acre to kilograms per hectare based on standard testweight (60 for wheat and 48 for barley)
+#'
+#' @param bu numeric. Bushels.
+#' @param barley logical. Is it barley? 
+#' @return [value]
+#' @details [fill in details here]
+#' @examples none
+#' @export
+buacToKgha <- function(buac, barley = FALSE){
+	if(barley) {
+		lbsac <- buac * 48
+	} else {
+		lbsac <- buac * 60 
+	}
+	# 0.45359237 lbs per kilo
+	kgac <- lbsac * 0.45359237
+	# 2.47105 acres per hectare
+	kgac * 2.47105
+}
+
+#' buacToLbkg function
+#'
+#' function to convert kilograms per hectare to bushels per acre based on standard testweight (60 for wheat and 48 for barley)
+#'
+#' @param bu numeric. Bushels.
+#' @param barley logical. Is it barley? 
+#' @return [value]
+#' @details [fill in details here]
+#' @examples none
+#' @export
+kghaToBuac <- function(kgha, barley = FALSE){
+	# 0.45359237 lbs per kilo
+	# 2.47105 acres per hectare
+	lbsha <- kgha / 0.45359237
+	lbsac <- lbsha / 2.47105
+	if(barley) {
+		buac <- lbsac / 48
+	} else {
+		buac <- lbsac / 60 
+	}
+	return(buac)
+}
+
 
 #' correctWeight function
 #'

@@ -3,13 +3,12 @@
 #' function to (do something)
 #'
 #' @param traitNames [value]
-#' @param addUnits [value]. Default is TRUE
-#' @param split [value]. Pattern that separates triat name from units or ontology
+#' @param splitPattern [value]. Pattern that separates triat name from units or ontology
 #' @return [value]
 #' @details [fill in details here]
 #' @examples none
 #' @export
-cleanTraitNames <- function(traitNames, addUnits = FALSE, splitPattern = "\n|\\|"){
+cleanTraitNames <- function(traitNames, splitPattern = "\n|\\|"){
 	#### this requires that trait names have the form trait\nunit. It will fail wihout the new line!
 	# if(addUnits){
 	# 	traitNames[grep("Yield", traitNames, ignore.case = TRUE)] <- paste0(traitNames[grep("Yield", traitNames, ignore.case = TRUE)], "\n(bu/ac)")
@@ -37,6 +36,13 @@ cleanTraitNames <- function(traitNames, addUnits = FALSE, splitPattern = "\n|\\|
 	nb <- grepl("\\(", traitNames) & !lb
 	traitUnits <- rep("", length(traitNames))
 	simpleTraitNames <- rep("", length(traitNames))
+	
+	# if(all(!lb) & all(!nb)){
+	# 	simpleTraitNames <- traitNames
+	# }
+	if(any(!lb & !nb)){
+		simpleTraitNames[!lb & !nb] <- traitNames[!lb & !nb]
+	}
 	if(any(lb)) {
 		splitNames <- strsplit(traitNames, splitPattern)	
 		traitUnits[lb] <- sapply(splitNames[lb], "[[", 2)

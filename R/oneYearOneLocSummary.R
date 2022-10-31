@@ -10,14 +10,21 @@
 #' @details [fill in details here]
 #' @examples none
 #' @export
-oneYearOneLocSummary <- function(dF, traits, sortby = NULL, allowDupEnt = TRUE, unitSep = "|", ...){
-	# dF = testData[[k]]; traits = traits; addInfo = dfInfo(addEntry, by = "Line"); sortby = by; unitSep = "|"; allowDupEnt = TRUE
+oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, allowDupEnt = TRUE, unitSep = "|", verbose = FALSE, ...){
+	# dF = testData[[k]]; traits = qtraits; addInfo = dfInfo(addEntry, by = "Line"); sortHiLo = by; sortLoHi = NULL; unitSep = "|"; allowDupEnt = TRUE
+	if(!all(c("Trial", "Line", "Entry", "Block") %in% names(dF))) stop("input data.frame must have columns 'Trial', 'Line', 'Entry', 'Block'") # need to update this! got distrcted and didnt finish
 	traits <- gsub("\\s*\\(.*|\\s*\n|\\|.*", "", traits)
 	# trtCols <- grep(paste(traits, collapse = "|"), names(dF))
 	trtCols <- sapply(traits, function(x) grep(x, names(dF)))
 	trtCols <- unlist(trtCols[sapply(trtCols, length) > 0])
+	
+	numtrait <- sapply(dF[trtCols], is.numeric)
+	charTrtCols <- trtCols[!numtrait]
+	trtCols <- trtCols[numtrait]
+	
 	traits <- traits[traits %in% names(trtCols)]
 	traitNames <- names(dF)[trtCols]
+
 
 	# names(dF)[names(dF) %in% traitNames] <- gsub("\n.*", "", names(dF)[names(dF) %in% traitNames])
 	names(dF)[names(dF) %in% traitNames] <- trimws(gsub("\n.*|\\(.*|\\|.*", "", names(dF)[names(dF) %in% traitNames]))
@@ -33,18 +40,36 @@ oneYearOneLocSummary <- function(dF, traits, sortby = NULL, allowDupEnt = TRUE, 
 
 		dfj <- dF[dF$Trial == j,]
 
+		lineVar <- names(dfj)[grep("^line", names(dfj), ignore.case = TRUE)] 
+		entVar <- names(dfj)[grep("^ent", names(dfj), ignore.case = TRUE)]
+		if(lineVar != "Line") names(df)[names(df) == lineVar] <- "Line"
+		if(entVar != "Entry") names(df)[names(df) == entVar] <- "Entry"
+		lineEnt <- unique(dfj[c("Line", "Entry")])
+		lineEnt <- lineEnt[order(lineEnt[["Entry"]]),]
+
+		naLine <- is.na(dF$Line)
+
+		if(any(!is.na(dfj[charTrtCols]))){
+			lineEntNotes <- compileNotes(dfj, charTrtCols)
+			addNotes <- TRUE
+		} else {
+			addNotes <- FALSE
+		}
+
 		if(any(table(dfj$Line) > 1) & any(!is.na(dfj[trtCols]))){
 
-			lineVar <- names(dfj)[grep("^line", names(dfj), ignore.case = TRUE)] 
-			entVar <- names(dfj)[grep("^ent", names(dfj), ignore.case = TRUE)]
-			lineEnt <- unique(dfj[c(lineVar, entVar)])
-			lineEnt <- lineEnt[order(lineEnt[[entVar]]),]
+			if(any(naLine)){
+				nadF <- dfj[naLine, "plot_name"]
+				dfj <- dfj[!naLine, ]
+				message("The following plots did not have a value for 'Line', and were removed from the data set:")
+				print(nadF)
+			}
 
-			if(any(duplicated(lineEnt[[lineVar]])) & !allowDupEnt){
+			if(any(duplicated(lineEnt[["Line"]])) & !allowDupEnt){
 				message(paste0("Duplicate entries found in ", j, "! Each duplicate entry will be treated as a separate line. Use allowDupEnt = TRUE to ignore\n"))
-				dupEnt <- lineEnt[[lineVar]][duplicated(lineEnt[[lineVar]])]
-				isDup <- lineEnt[[lineVar]] %in% dupEnt
-				lineEnt[[lineVar]][isDup] <- paste0(lineEnt[[lineVar]][isDup], "_Entry", lineEnt[[entVar]][isDup])
+				dupEnt <- lineEnt[["Line"]][duplicated(lineEnt[["Line"]])]
+				isDup <- lineEnt[["Line"]] %in% dupEnt
+				lineEnt[["Line"]][isDup] <- paste0(lineEnt[["Line"]][isDup], "_Entry", lineEnt[["Entry"]][isDup])
 			}
 
 			dfj$Line <- factor(dfj$Line, levels = unique(lineEnt$Line))
@@ -54,7 +79,8 @@ oneYearOneLocSummary <- function(dF, traits, sortby = NULL, allowDupEnt = TRUE, 
 			BLUP <- list()
 			BLUE <- list()
 
-			sortByTrt <- NULL
+			sortHiLoTrt <- NULL
+			sortLoHiTrt <- NULL
 			for(i in traits){
 				
 				dfij <- whichTrials(dfj, i)
@@ -69,12 +95,14 @@ oneYearOneLocSummary <- function(dF, traits, sortby = NULL, allowDupEnt = TRUE, 
 				whichNameUnit <- which(traits == i)
 				# whichNameUnit <- grep(i, traitNames)
 				traitNameUnit <- trimws(paste(sapply(trtnu, "[[", whichNameUnit), collapse = unitSep))
-				if(!is.null(sortby)){
-					if(length(grep(sortby, i, ignore.case = TRUE))) {
-						sortByTrt <- traitNameUnit
+				if(!is.null(sortHiLo)){
+					if(length(grep(sortHiLo, i, ignore.case = TRUE))) {
+						sortHiLoTrt <- traitNameUnit
 					}
-				} else {
-					sortByTrt <- NULL
+				} else if(!is.null(sortLoHi)){
+					if(length(grep(sortLoHi, i, ignore.case = TRUE))) {
+						sortLoHiTrt <- traitNameUnit
+					}
 				}
 				if(any(table(dfij$Line) > 1)){
 
@@ -110,16 +138,27 @@ oneYearOneLocSummary <- function(dF, traits, sortby = NULL, allowDupEnt = TRUE, 
 				
 			}
 
-			if(length(BLUE)){			
-				lsmeansTable <- makeBLUtab(BLUE, sortby = sortByTrt, ...)
-				blupTable <- makeBLUtab(BLUP, sortby = sortByTrt, ...)
+			if (length(BLUE)){			
+				# lsmeansTable <- makeBLUtab(BLUE, sortHiLo = sortHiLo, sortLoHi = sortLoHi, addInfo = dfInfo(addEntry, by = "Line"))
+				# blupTable <- makeBLUtab(BLUP, sortHiLo = sortHiLo, sortLoHi = sortLoHi, addInfo = dfInfo(addEntry, by = "Line"))
+				lsmeansTable <- makeBLUtab(BLUE, sortHiLo = sortHiLoTrt, sortLoHi = sortLoHiTrt, ...)
+				blupTable <- makeBLUtab(BLUP, sortHiLo = sortHiLoTrt, sortLoHi = sortLoHiTrt, ...)
 				names(lsmeansTable)[names(lsmeansTable) == "effect"] <- "Line"
 				names(blupTable)[names(blupTable) == "effect"] <- "Line"
-				if (is.null(sortByTrt) & entVar %in% names(lsmeansTable)) {
-					lsmeansTable <- lsmeansTable[order(lsmeansTable[[entVar]]),]
-					blupTable <- blupTable[order(blupTable[[entVar]]),]
+				if(addNotes){
+					lsmeansTable <- mergeNotes(lsmeansTable, lineEntNotes)
+					blupTable <- mergeNotes(blupTable, lineEntNotes)
 				}
-
+				if (is.null(sortHiLoTrt) & is.null(sortLoHiTrt) & "Entry" %in% names(lsmeansTable)) {
+					# I am a little surprised the stats at bottom dont mess this up. may need to make more robust. 
+					lsmeansTable <- lsmeansTable[order(lsmeansTable[["Entry"]]),]
+					blupTable <- blupTable[order(blupTable[["Entry"]]),]
+				# use of mergeNotes should fix this need to resort afterward.
+				# } else if (!is.null(sortByTrt) & addNotes) {
+				# 	if(!is.null(sortHiLo)) neg <- -1 else neg <- 1
+				# 	lsmeansTable <- lsmeansTable[order(neg * lsmeansTable[[sortByTrt]]),]
+				# 	blupTable <- blupTable[order(neg * lsmeansTable[[sortByTrt]]),]
+				}
 				estL[[j]] <- list(BLUE = lsmeansTable, BLUP = blupTable)
 			} else {
 				message(paste0(unique(dfj$Trial), " has no numeric phenotypes. Returning nothing"))

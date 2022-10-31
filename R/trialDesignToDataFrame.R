@@ -7,7 +7,7 @@
 #' @details [fill in details here]
 #' @examples none
 #' @export
-trialDesignToDataFrame <- function(tr) {
+trialDesignToDataFrame <- function(tr, inclPed = TRUE) {
 	trialSplit <- strsplit(tr@plotName, "_")
 	test <- sapply(trialSplit, "[", 1)
 	yr <- sapply(trialSplit, "[", 2)
@@ -22,5 +22,6 @@ trialDesignToDataFrame <- function(tr) {
 					   Entry = tr@Entry, 
 					   Block = tr@block, 
 					   Plot = tr@plotNo)
+	if(inclPed) trdf <- data.frame(trdf, Pedigree = tr@Pedigree)
 	return(trdf)
 }

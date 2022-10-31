@@ -4,7 +4,7 @@
 \alias{trialDesignToDataFrame}
 \title{trialDesignToDataFrame function}
 \usage{
-trialDesignToDataFrame(tr)
+trialDesignToDataFrame(tr, inclPed = TRUE)
 }
 \arguments{
 \item{tr}{object of class trialDesign.}

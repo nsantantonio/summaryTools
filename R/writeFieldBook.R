@@ -10,9 +10,9 @@
 #' @examples none
 #' @export
 writeFieldBook <- function(testDf, traits, keepCols = NULL, unitSep = "|"){
-
+# testDf = testData[[k]]; traits = traits; keepCols = NULL; unitSep = "|"
 	if(is.null(keepCols)){
-		keepCols <- c("Year", "Location", "Trial", "^plot_name$", "^plot$", "^bloc", "^ent", "^line$", "^pedigree$")
+		keepCols <- c("Year", "Location", "Trial", "^plot_name$", "^plot$", "^bloc", "^ent", "^line$", "^pedigree$", "^pass$", "^range$")
 	}
 	trtCols <- grep(paste(gsub("\\|", "\\\\|", traits), collapse = "|"), names(testDf))
 	traitNames <- names(testDf)[trtCols]
@@ -23,9 +23,16 @@ writeFieldBook <- function(testDf, traits, keepCols = NULL, unitSep = "|"){
 	traitNameUnit <- NULL
 	for(i in traits){
 		whichNameUnit <- grep(gsub("\\|", "\\\\|", i), traitNames)
+		if(length(whichNameUnit) > 1){ # for multiple matches, get one that matches exactly
+			whichNameUnit <- which(traitNames == i)
+		}
 		if(length(whichNameUnit)){
 			traitNameUnit <- c(traitNameUnit, paste(sapply(trtnu, "[[", whichNameUnit), collapse = unitSep))
-			trtOrder <- c(trtOrder, grep(gsub("\\|", "\\\\|", i), names(testDf)))
+			trtiCol <-  grep(gsub("\\|", "\\\\|", i), names(testDf))
+			if(length(trtiCol) > 1){
+				trtiCol <- which(names(testDf) == i)
+			}
+			trtOrder <- c(trtOrder, trtiCol)
 		}
 	}
 	names(testDf)[trtOrder] <- traitNameUnit

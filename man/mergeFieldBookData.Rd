@@ -5,8 +5,8 @@
 \title{mergeFieldData function}
 \usage{
 mergeFieldBookData(fb, dj = NULL, scl = NULL, paperfb = NULL,
-  trialDesigns = NULL, sqft = 45, testName = NULL, year = NULL,
-  ...)
+  trialDesigns = NULL, trialPassRange = NULL, sqft = 45,
+  testName = NULL, year = NULL, inclPed = TRUE, ...)
 }
 \arguments{
 \item{fb}{[value]}

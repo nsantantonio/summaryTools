@@ -4,17 +4,17 @@
 \alias{oneYearOneLocSummary}
 \title{oneYearOneLocSummary function}
 \usage{
-oneYearOneLocSummary(dF, traits, sortby = NULL, allowDupEnt = TRUE,
-  unitSep = "|", ...)
+oneYearOneLocSummary(dF, traits, sortHiLo = NULL, sortLoHi = NULL,
+  allowDupEnt = TRUE, unitSep = "|", verbose = FALSE, ...)
 }
 \arguments{
 \item{dF}{[value]}
 
 \item{traits}{[value]}
 
-\item{sortby}{[value]. Default is NULL}
-
 \item{allowDupEnt}{[value]. Default is TRUE}
+
+\item{sortby}{[value]. Default is NULL}
 }
 \value{
 [value]

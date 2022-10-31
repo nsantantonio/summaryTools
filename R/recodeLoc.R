@@ -11,11 +11,42 @@
 #' @export
 recodeLoc <- function(loc, locCode = NULL, locPattern = NULL){
 	if(is.null(locCode)){
-		locCode <- c("BLAVA", "WARVA", "PNTVA", "BLSVA", "HOLVA", "ORGVA", "SHVVA", "NKTVA", "SN")
+		locCode <- c("BLAVA", 
+					 "WARVA", 
+					 "PNTVA", 
+					 "BLSVA", 
+					 "HOLVA", 
+					 "ORGVA", 
+					 "SHVVA", 
+					 "NKTVA", 
+					 "SN",
+					 "HAMIL", 
+					 "HATMO", 
+					 "STPIL", 
+					 "CENIL", 
+					 "HIHMO", 
+					 "CHPIL", 
+					 "URBIL")
 	}
 	if(is.null(locPattern)){
-		locPattern <- c("blacksburg", "warsaw", "painter", "blackstone", "holland", "orange", "valley", "kent", "scab")
+		locPattern <- c("blacksburg", 
+						"warsaw", 
+						"painter", 
+						"blackstone", 
+						"holland", 
+						"orange", 
+						"valley", 
+						"kent", 
+						"scab",
+						"Hamel", 
+						"Hatton", 
+						"St Peter", 
+						"Centralia", 
+						"High Hill",
+						"Champagne", 
+						"Urbana")
 	}
+	# if(length(locCode) != length(locPattern)) stop("locCode must be same length as locPattern!")
 	for(i in 1:length(locCode)){
 		loc[grepl(locPattern[i], loc, ignore.case = TRUE)] <- locCode[i]
 	}

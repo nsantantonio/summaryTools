@@ -32,25 +32,25 @@ formatPrintSummary2 <- function(smry, infoCols = "Line", tex = TRUE, sortBy = NU
 
 	
 
-	sapply(smry[-statRows, traits], function(x) all(x%%1==0))
-	as.matrix(sapply(smry[-statRows, traits], sprintf, fmt = paste0("%#.2f")))
+	# sapply(smry[-statRows, traits], function(x) all(x%%1==0))
+	# as.matrix(sapply(smry[-statRows, traits], sprintf, fmt = paste0("%#.2f")))
 	
-	traitpr <- as.matrix(sapply(smry[-statRows, traits], sprintf, fmt = paste0("%.", decimals[1], "g")))
-	statpr <- as.matrix(sapply(smry[statRows, traits], sprintf, fmt = paste0("%.", decimals[2], "g"))
+	# traitpr <- as.matrix(sapply(smry[-statRows, traits], sprintf, fmt = paste0("%.", decimals[1], "g")))
+	# statpr <- as.matrix(sapply(smry[statRows, traits], sprintf, fmt = paste0("%.", decimals[2], "g"))
 
 
-	traitpr[traitpr == "NA"] <- ""
-	otherpr <- as.matrix(smry[otherCols])
-	prmat <- matrix(paste0(traitpr, sigpr), nrow = nrow(traitpr), ncol = ncol(traitpr), dimnames = dimnames(traitpr))
-	prmat
+	# traitpr[traitpr == "NA"] <- ""
+	# otherpr <- as.matrix(smry[otherCols])
+	# prmat <- matrix(paste0(traitpr, sigpr), nrow = nrow(traitpr), ncol = ncol(traitpr), dimnames = dimnames(traitpr))
+	# prmat
 
-	if(!is.null(infoCols)) prmat <- cbind(info, prmat, otherpr)
-	if(!is.null(sortBy)) {
-		if(loHi) {
-			prmat <- prmat[order(prmat[[sortBy]]),]
-		}  else {
-			prmat <- prmat[order(-1L * prmat[[sortBy]]),]
-		}
-	}
-	if(tex)  print(xtable(prmat), include.rownames = FALSE)  else return(prmat)
+	# if(!is.null(infoCols)) prmat <- cbind(info, prmat, otherpr)
+	# if(!is.null(sortBy)) {
+	# 	if(loHi) {
+	# 		prmat <- prmat[order(prmat[[sortBy]]),]
+	# 	}  else {
+	# 		prmat <- prmat[order(-1L * prmat[[sortBy]]),]
+	# 	}
+	# }
+	# if(tex)  print(xtable(prmat), include.rownames = FALSE)  else return(prmat)
 }

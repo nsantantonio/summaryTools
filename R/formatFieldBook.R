@@ -26,9 +26,8 @@ formatFieldBook <- function(fb, year = NULL){
 	}
 	trL <- list()
 	for(i in traits){
-		# i = traits[2]
-		fbi <- fb[fb$trait == i, ]
-		
+		# i = traits[1]
+		fbi <- fb[fb$trait == i, ]		
 		if(grepl("Heading|^HD", i)){
 			isDate <- grep("\\-|\\/", fbi$value)
 			if(any(isDate)){
@@ -36,11 +35,24 @@ formatFieldBook <- function(fb, year = NULL){
 				fbi$value <- as.integer(fbi$value)
 			} 
 		}
-		# if(grepl("Height|^PH|^HT", i)){
-		# 	fbi$value <- 
-		# }
 		names(fbi)[names(fbi) == "value"] <- i
   		if (canBeNumeric(fbi[[i]])) fbi[[i]] <- as.numeric(fbi[[i]])
+		dupPlot <- duplicated(fbi[["plot_name"]])
+		if(any(dupPlot)){
+			fbi[fbi$plot_name %in% fbi$plot_name[dupPlot],]
+			dupPlotName <- unique(fbi$plot_name[fbi$plot_name %in% fbi$plot_name[dupPlot]])
+			uniqPlot <- list()
+			for(j in dupPlotName){
+				dupj <- fbi[fbi$plot_name %in% j,]
+				dupj[1,i] <- paste(dupj[[i]], collapse = "; ")
+				uniqPlot[[j]] <- dupj[1,]
+			}
+			fbi <- rbind(fbi[!fbi$plot_name %in% dupPlotName, ], do.call(rbind, uniqPlot))
+		}
+		if(any(duplicated(fbi$plot_name))) {
+			print(fbi[fbi$plot_name %in% fbi$plot_name[duplicated(fbi$plot_name)],])
+			stop("formatFieldBook: the above plots are duplicated!")
+		}
 		trL[[i]] <- fbi[c("plot_name", i)]
 	}
 
