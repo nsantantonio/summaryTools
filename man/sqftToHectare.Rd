@@ -19,5 +19,5 @@ function to convert square feet to hectares
 [fill in details here]
 }
 \examples{
-none
+# none
 }

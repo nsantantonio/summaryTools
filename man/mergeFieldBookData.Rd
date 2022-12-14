@@ -31,5 +31,5 @@ function to merge fieldbook data collected with the fieldbook application.
 [fill in details here]
 }
 \examples{
-none
+# none
 }

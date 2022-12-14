@@ -26,5 +26,5 @@ function to correct weight based on percent moisture. Standard moisture is 13.5 
 [fill in details here]
 }
 \examples{
-none
+# none
 }

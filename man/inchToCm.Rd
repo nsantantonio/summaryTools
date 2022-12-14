@@ -19,5 +19,5 @@ function to convert inches to centimeters.
 [fill in details here]
 }
 \examples{
-none
+# none
 }

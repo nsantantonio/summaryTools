@@ -25,5 +25,5 @@ function to convert pounds to grain yield using standard moisture
 [fill in details here]
 }
 \examples{
-none
+# none
 }

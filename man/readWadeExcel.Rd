@@ -28,5 +28,5 @@ function to read Wade's crazy excel table summaries.
 [fill in details here]
 }
 \examples{
-none
+# none
 }

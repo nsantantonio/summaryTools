@@ -21,5 +21,5 @@ function to merge compiled notes with summary tables without losing stats.
 [fill in details here]
 }
 \examples{
-none
+# none
 }

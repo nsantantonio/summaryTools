@@ -21,5 +21,5 @@ function to add LSD separation from the mean
 [fill in details here]
 }
 \examples{
-none
+# none
 }

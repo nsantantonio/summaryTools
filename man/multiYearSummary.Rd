@@ -28,5 +28,5 @@ function to (do something)
 [fill in details here]
 }
 \examples{
-none
+# none
 }

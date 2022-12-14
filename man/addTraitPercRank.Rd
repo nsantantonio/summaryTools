@@ -26,5 +26,5 @@ function to sort summaries.
 [fill in details here]
 }
 \examples{
-none
+# none
 }
