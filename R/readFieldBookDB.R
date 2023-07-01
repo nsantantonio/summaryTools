@@ -38,6 +38,7 @@ readFieldBookDB <- function(path, ontology = NULL, printTraitTable = FALSE, expo
 		}
 		# unique(lapply(fbL, names))
 		fb <- do.call(rbind, fbL)
+		fb$trait[fb$trait %in% c("Notes", "Comments", "comments")] <- "notes"
 		row.names(fb) <- NULL
 
 		if(exportFullFB) return(fb)
