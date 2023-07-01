@@ -38,7 +38,7 @@ oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, a
 	
 	estL <- list()
 	for(j in trials){
-		# j <- trials[1]
+		# j <- trials[2]
 		dfj <- dF[dF$Trial == j,]
 
 		lineVar <- names(dfj)[grep("^line", names(dfj), ignore.case = TRUE)] 
@@ -83,7 +83,7 @@ oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, a
 			sortHiLoTrt <- NULL
 			sortLoHiTrt <- NULL
 			for(i in traits){
-				# i = traits[[3]]
+				# i = traits[[5]]
 				dfij <- whichTrials(dfj, i)
 				dfij <- dfij[!is.na(dfij[[i]]),] # added after last years analysis to deal with traits measured in one loc, one block. 
 				if(nrow(dfij) == 0){
@@ -130,9 +130,9 @@ oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, a
 				} else {
 					unr <- dfij[[i]]
 					names(unr) <- dfij[["Line"]]
-					if(length(unr) < length(BLUE[[1]][[1]])) unr[names(BLUE[[1]][[1]])[!names(BLUE[[1]][[1]]) %in% names(unr)]] <- NA
-					unr <- unr[names(unr) %in% names(BLUE[[1]][[1]])]
-					if(!all(names(unr) == names(BLUE[[1]][[1]]))) unr <- unr[names(BLUE[[1]][[1]])]
+					LineLev <- levels(dfj[["Line"]])
+					unr[LineLev[!LineLev %in% names(unr)]] <- NA
+					unr <- unr[LineLev]	
 					BLUE[[traitNameUnit]] <- list(BLUE = unr, mean = mean(unr), CV = NA, LSD = NA)
 					BLUP[[traitNameUnit]] <- list(BLUP = unr, mean = mean(unr), h2 = NA, sigma = NA)
 					message(paste0(i, " is unreplicated (only scored in one environment and/or rep). Returning raw phenotypes"))
