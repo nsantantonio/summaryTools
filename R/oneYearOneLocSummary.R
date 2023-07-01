@@ -11,7 +11,8 @@
 #' @examples # none
 #' @export
 oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, allowDupEnt = TRUE, unitSep = "|", verbose = FALSE, ...){
-	# dF = testData[[k]]; traits = qtraits; addInfo = dfInfo(addEntry, by = "Line"); sortHiLo = by; sortLoHi = NULL; unitSep = "|"; allowDupEnt = TRUE
+	# dF = testData[[k]]; traits = qtraits; addInfo = dfInfo(addEntry, by = "Line"); sortHiLo = sortby; sortLoHi = NULL; unitSep = "|"; allowDupEnt = TRUE
+	# dF = nut; traits = "DON"
 	if(!all(c("Trial", "Line", "Entry", "Block") %in% names(dF))) stop("input data.frame must have columns 'Trial', 'Line', 'Entry', 'Block'") # need to update this! got distrcted and didnt finish
 	traits <- gsub("\\s*\\(.*|\\s*\n|\\|.*", "", traits)
 	# trtCols <- grep(paste(traits, collapse = "|"), names(dF))
@@ -37,7 +38,7 @@ oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, a
 	
 	estL <- list()
 	for(j in trials){
-
+		# j <- trials[1]
 		dfj <- dF[dF$Trial == j,]
 
 		lineVar <- names(dfj)[grep("^line", names(dfj), ignore.case = TRUE)] 
@@ -82,7 +83,7 @@ oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, a
 			sortHiLoTrt <- NULL
 			sortLoHiTrt <- NULL
 			for(i in traits){
-				
+				# i = traits[[3]]
 				dfij <- whichTrials(dfj, i)
 				dfij <- dfij[!is.na(dfij[[i]]),] # added after last years analysis to deal with traits measured in one loc, one block. 
 				if(nrow(dfij) == 0){
@@ -104,14 +105,15 @@ oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, a
 						sortLoHiTrt <- traitNameUnit
 					}
 				}
-				if(any(table(dfij$Line) > 1)){
+				if(sum(table(dfij$Line) > 1) > 1){
 
 					if(length(unique(dfij$Trial)) == 1 & length(unique(dfij$Bloc)) == 1){
 						fixFormi <- "~ Line"
 						mixFormi <- "~ (1|Line)"
 					} else if(length(unique(dfij$Trial)) == 1){
 						fixFormi <- "~ Bloc + Line"
-						mixFormi <- "~ (1|Bloc) + (1|Line)"
+						# mixFormi <- "~ (1|Bloc) + (1|Line)"
+						mixFormi <- "~ Bloc + (1|Line)" # Bloc is fixed here since there usually isnt more than 2 or 3 blocks per
 					} else {
 						fixFormi <- "~ Trial + Trial:Bloc + Line"
 						mixFormi <- "~ Trial + (1|Trial:Bloc) + (1|Line)"
