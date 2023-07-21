@@ -9,8 +9,8 @@
 #' @examples # none
 #' @export
 readRegionalExcel <- function(path, nlineHeader = 2, ...){
-	# nlineHeader <- 2
-	# tm <- as.data.frame(read_excel("/home/nsant/Dropbox/releases2022/dataSummaries/VA17W-75/19GAWN-Means Report-Final_Harrison.xlsx", sheet = "summary", skip = nlineHeader, col_names = FALSE)); tmh <- as.data.frame(read_excel("/home/nsant/Dropbox/releases2022/dataSummaries/VA17W-75/19GAWN-Means Report-Final_Harrison.xlsx", sheet = "summary", n_max = nlineHeader))
+	# nlineHeader <- 2; path = "/home/nsant/Dropbox/releases2023/analysis/data/GAWN21MEANS071421.xlsx"
+	# tm <- as.data.frame(read_excel(path, skip = nlineHeader, col_names = FALSE,sheet = "summary", na = c("", "-"))); tmh <- as.data.frame(read_excel(path, n_max = nlineHeader,sheet = "summary", na = c("", "-")))
 	require(readxl)
 	tm <- as.data.frame(read_excel(path, skip = nlineHeader, col_names = FALSE, ...))
 	tmh <- as.data.frame(read_excel(path, n_max = nlineHeader, ...))
@@ -65,8 +65,9 @@ readRegionalExcel <- function(path, nlineHeader = 2, ...){
 			dFi[[i]] <- c(datMat)
 			dfL[[i]] <- dFi
 		} else {
+			print(i)
 			nL[i] <- ncol(datMat)
-			dFi <- data.frame(Line = c(lineNames, stat[["Line"]]), rbind(dati, stati))
+			dFi <- data.frame(Line = c(lineNames, stat[["Line"]]), rbind(dati, stati), check.names = FALSE)
 			scL[[i]] <- dFi
 		}
 	}
