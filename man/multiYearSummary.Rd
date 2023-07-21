@@ -4,8 +4,18 @@
 \alias{multiYearSummary}
 \title{multiYearSummary function}
 \usage{
-multiYearSummary(dF, traits, locs = NULL, sortby = NULL,
-  allowDupEnt = TRUE, blockName = "Bloc", ...)
+multiYearSummary(
+  dF,
+  traits,
+  locs = NULL,
+  sortHiLo = NULL,
+  sortLoHi = NULL,
+  allowDupEnt = TRUE,
+  blockName = "Block",
+  unitSep = "|",
+  addNoTrial = TRUE,
+  ...
+)
 }
 \arguments{
 \item{dF}{[value]}
@@ -14,9 +24,9 @@ multiYearSummary(dF, traits, locs = NULL, sortby = NULL,
 
 \item{locs}{[value]. Default is NULL}
 
-\item{sortby}{[value]. Default is NULL}
-
 \item{allowDupEnt}{[value]. Default is TRUE}
+
+\item{sortby}{[value]. Default is NULL}
 }
 \value{
 [value]

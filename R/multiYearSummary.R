@@ -11,15 +11,19 @@
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-multiYearSummary <- function(dF, traits, locs = NULL, sortby = NULL, allowDupEnt = TRUE, blockName = "Bloc", ...){
-	
+multiYearSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sortLoHi = NULL, allowDupEnt = TRUE, blockName = "Block", unitSep = "|", addNoTrial = TRUE, ...){
+	# dF = hrw18to22; traits = trts; locs = NULL; sortHiLo = NULL; sortLoHi = NULL; allowDupEnt = TRUE; blockName = "Block"; unitSep= "|"; addNoTrial = TRUE
 	if(any(table(dF$Line) > 1)){
 
 		traits <- gsub("\\s*\\(.*|\\s*\n|\\|.*", "", traits)
 		trtCols <- sapply(traits, function(x) grep(x, names(dF)))
+		if(any(sapply(trtCols, length) > 1)) {
+			stop("Multiple columns match a single trait")
+		}
 		trtCols <- unlist(trtCols[sapply(trtCols, length) > 0])
 		traits <- traits[traits %in% names(trtCols)]
 		traitNames <- names(dF)[trtCols]
+
 
 		names(dF)[names(dF) %in% traitNames] <- trimws(gsub("\n.*|\\(.*|\\|.*", "", names(dF)[names(dF) %in% traitNames]))
 
@@ -51,25 +55,34 @@ multiYearSummary <- function(dF, traits, locs = NULL, sortby = NULL, allowDupEnt
 			dF[[blockName]] <- 1
 		}
 		dF[[blockName]] <- factor(dF[[blockName]], levels = unique(dF[[blockName]]))
+		
+		sortHiLoTrt <- NULL
+		sortLoHiTrt <- NULL
 		BLUP <- list()
 		BLUE <- list()
 		unrepTrait <- list()
 		for(i in traits){
 			message(paste0("Running analyses for trait:", i, " across these trials:"))
 			dfi <- whichTrials(dF, i)
-			print(unique(gsub("_[^_]+$", "", dfi$Trial)))
+			# print(unique(gsub("_[^_]+$", "", dfi$Trial)))
+			trialNames <- unique(dfi$Trial)
+			nTr <- length(trialNames)
+			print(trialNames)
 			# message(paste0("Running analyses for trait:", i))
 			dfi <- dfi[!is.na(dfi[[i]]),] # added after last years analysis to deal with traits measured in one loc, one block. 
 
 			if(nrow(dfi) > 0){
 				whichNameUnit <- which(traits == i)
-				traitNameUnit <- trimws(paste(sapply(trtnu, "[[", whichNameUnit), collapse = " "))
-				if(!is.null(sortby)){
-					if(length(grep(sortby, i, ignore.case = TRUE))) {
-						sortByTrt <- traitNameUnit
+				traitNameUnit <- trimws(paste(sapply(trtnu, "[[", whichNameUnit), collapse = unitSep))
+				if(addNoTrial) traitNameUnit <- paste0(traitNameUnit, " (", nTr, ")")
+				if(!is.null(sortHiLo)){
+					if(length(grep(sortHiLo, i, ignore.case = TRUE))) {
+						sortHiLoTrt <- traitNameUnit
 					}
-				} else {
-					sortByTrt <- NULL
+				} else if(!is.null(sortLoHi)){
+					if(length(grep(sortLoHi, i, ignore.case = TRUE))) {
+						sortLoHiTrt <- traitNameUnit
+					}
 				}
 				if(any(table(dfi$Line) > 1)){
 
@@ -107,8 +120,8 @@ multiYearSummary <- function(dF, traits, locs = NULL, sortby = NULL, allowDupEnt
 			}
 		}
 
-		lsmeansTable <- makeBLUtab(BLUE, sortby = sortByTrt, ...)
-		blupTable <- makeBLUtab(BLUP, sortby = sortByTrt, ...)
+		lsmeansTable <- makeBLUtab(BLUE, sortHiLo = sortHiLoTrt, sortLoHi = sortLoHiTrt, ...)
+		blupTable <- makeBLUtab(BLUP, sortHiLo = sortHiLoTrt, sortLoHi = sortLoHiTrt, ...)
 		names(lsmeansTable)[names(lsmeansTable) == "effect"] <- "Line"
 		names(blupTable)[names(blupTable) == "effect"] <- "Line"
 		return(list(BLUE = lsmeansTable, BLUP = blupTable))
