@@ -51,8 +51,8 @@ mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialD
 	# fb <- fb[names(fb) %in% names(scl)]
 	yldL <- list()
 	if (!is.null(scl) & !is.null(dj)){		
-		names(scl) <- paste0(testName, "_", year, "_", recodeLoc(recodeLoc(names(scl)),locPattern = locCode)) # will accept either BLAVA or blacksburg
-		names(dj) <- paste0(testName, "_", year, "_", recodeLoc(recodeLoc(names(dj)),locPattern = locCode)) # will accept either BLAVA or blacksburg
+		names(scl) <- paste0(testName, "_", year, "_", recodeLoc(recodeLoc(names(scl)), locPattern = locCode)) # will accept either BLAVA or blacksburg
+		names(dj) <- paste0(testName, "_", year, "_", recodeLoc(recodeLoc(names(dj)), locPattern = locCode)) # will accept either BLAVA or blacksburg
 		if (length(names(scl)) != length(names(dj))) {
 			message("Scale and Dj lists are different lengths (different no. of trials?)")
 			scl <- scl[names(scl) %in% names(dj)]
@@ -77,7 +77,7 @@ mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialD
 			}
 		}
 		
-		sclNW <- lapply(scl, "[", c("plot_name", "netWeight"))
+		# sclNW <- lapply(scl, "[", c("plot_name", "netWeight")) # why is this line necessary?
 
 		if (length(sqft) > 1){
 			if (length(sqft) != length(trialNames)) stop("either a single value must be provided to 'sqft' or its length must match the number of trials!")
@@ -91,10 +91,17 @@ mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialD
 			names(sqft) <- trialNames
 		}
 		for(i in yieldTrials){
-			scldj <- merge(sclNW[[i]], djMTW[[i]], by = "plot_name", all = TRUE)
+			# scldj <- merge(sclNW[[i]], djMTW[[i]], by = "plot_name", all = TRUE)
+			if("blockName" %in% names(scl[[i]]) & "blockName" %in% names(djMTW[[i]])){
+				scldj <- merge(scl[[i]], djMTW[[i]], by = c("blockName", "plot_name"), all = TRUE)
+			} else {
+				scldj <- merge(scl[[i]], djMTW[[i]], by = "plot_name", all = TRUE)
+			}
 			scldj$Yield <- gramsToYield(g = scldj$netWeight, moisture = scldj$Moisture, sqft = sqft[[i]], ...)
 			# scldj$Yield <- gramsToYield(g = scldj$netWeight, moisture = scldj$Moisture, sqft = sqft[[i]])
-			yldL[[i]] <- scldj
+			rpn <- names(scldj)[names(scldj) %in% c("RangeHM", "RowHM", "NotesHM")]
+			nwtwm <- names(scldj)[!names(scldj) %in% c("RangeHM", "RowHM", "NotesHM")]
+			yldL[[i]] <- scldj[c(nwtwm, rpn)] # will have to make sure each element has all same name if do.call rbind later.
 		}
 	} else {
 		if (is.null(fb)) message(paste0("This trial contains no fieldbook, scale or dickey john data: ", testName))
@@ -112,7 +119,7 @@ mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialD
 			names(trialDesigns) <- trdfnames
 		}
 		trialClass <- unique(sapply(trialDesigns, class)) 
-		if (length(trialClass) > 1) stop("trials must all be of the class 'trialsDesign' or 'data.frame'")
+		if (length(trialClass) > 1) stop("trials must all be of the class 'trialDesign' or 'data.frame'")
 		if (trialClass == "trialDesign"){
 			td <- lapply(trialDesigns, trialDesignToDataFrame, inclPed = inclPed)
 			td <- do.call(rbind, td)
@@ -182,17 +189,36 @@ mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialD
 	}
 
 	if (!is.null(trialPassRange) & tdExists){
-		if(!all(c("plot_name", "pass", "range") %in% names(trialPassRange))) stop("trialPassRange must contain the variables 'plot_name', 'pass' and 'range'.")
-		alldata <- merge(alldata, trialPassRange[c("plot_name", "pass", "range")], by = "plot_name", all.x = TRUE)
-		alldata <- alldata[order(alldata$plot_name), ]
-		tprExists <- TRUE
+		if(!all(c("blockName", "plot_name", "pass", "range") %in% names(trialPassRange))) stop("trialPassRange must contain the variables 'blockName', 'plot_name', 'pass' and 'range'.")
+		alldataNames <- names(alldata)[!names(alldata) %in% "blockName"]
+		allDataTrialList <- list()
+		# this is needed for when trials are split across fieldBlocks (need for blockname) or when trial does not have a trial in a fieldblock (eg. scab nursery fieldblocks have trays, not each trial)
+		for(i in unique(alldata$Trial)){
+			alldatai <- alldata[alldata$Trial %in% i, ]
+			if(i %in% trialPassRange$Trial & !is.null(alldatai$blockName)){
+				alldatai <- merge(alldatai, trialPassRange[c("blockName", "plot_name", "pass", "range")], by = c("blockName", "plot_name"), all.x = TRUE)
+			} else {
+				alldatai <- merge(alldatai, trialPassRange[c("plot_name", "pass", "range")], by = c("plot_name"), all.x = TRUE)
+				alldatai$blockName <- NA # could use trial name?
+			}
+			# alldatai <- alldatai[order(alldatai$plot_name), ]
+			alldatai <- alldatai[order(alldatai$Plot), ] # all trials should have a Plot col, right?
+			allDataTrialList[[i]] <- alldatai[c(alldataNames, "blockName", "pass", "range")]
+		}
+		# if(any(alldata$Trial %in% trialPassRange$Trial)){ # this could break. if some trials in trialPassRange, but not others, they could be dropped. DO I need to do this by trial? probably. 
+		# 	alldata <- merge(alldata, trialPassRange[c("blockName", "plot_name", "pass", "range")], by = c("blockName", "plot_name"), all.x = TRUE)
+		# } else {
+		# 	alldata <- merge(alldata, trialPassRange[c("plot_name", "pass", "range")], by = c("blockName", "plot_name"), all.x = TRUE)
+		# }
+		alldata <- do.call(rbind, allDataTrialList)
+		# tprExists <- TRUE # not sure what this was intended to do. seems to have no function 
 	} else if ((!is.null(trialPassRange) & !tdExists)){
 		stop("Trial designs must be included if using 'trialPassRange'!")
-	} else {
-		tprExists <- FALSE
-	}
+	} #else {
+		#tprExists <- FALSE
+	#}
 
-	# names(alldata)[names(alldata) %in% ] # ??? dont remember what this was intended for
+	# names(alldata)[names(alldata) %in% ] # ??? dont remember what this was intended for, reorder columns probably
 	if (!is.null(fb)) {
 		nRec <- sum(sapply(fb, nrow))
 		if (nrow(alldata) != nRec){
