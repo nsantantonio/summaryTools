@@ -4,7 +4,15 @@
 \alias{mergeHarvM}
 \title{mergeHarvM function}
 \usage{
-mergeHarvM(hmL, sclL, djL, consensus = TRUE)
+mergeHarvM(
+  hmL,
+  sclL,
+  djL,
+  consensus = TRUE,
+  keepRangeRow = TRUE,
+  keepNotes = TRUE,
+  rmPlotPattern = NULL
+)
 }
 \arguments{
 \item{hmL}{[value]}
@@ -14,6 +22,12 @@ mergeHarvM(hmL, sclL, djL, consensus = TRUE)
 \item{djL}{[value]}
 
 \item{consensus}{Should a consensus be used to merge moisture and test weight data from dickey john and harvest master?}
+
+\item{keepRangeRow}{Should Range and Row from Harvest Master be kept? Useful if trials dont have a trialDesign}
+
+\item{keepNotes}{Should Notes from teh harvest master be kept?}
+
+\item{rmPlotPattern}{regex pattern to remove plots, such as fill plots.}
 }
 \value{
 [value]
