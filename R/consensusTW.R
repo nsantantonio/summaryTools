@@ -10,25 +10,29 @@
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-consensusTW <- function(djhm, defaultDJ = FALSE, TWrange = c(55, 64), barley = FALSE, ...){
-	if(barley & TWrange[1] == 55) {
+consensusTW <- function(djhm, defaultDJmoist = TRUE, defaultDJweight = TRUE, TWrange = c(52, 64), barley = FALSE, ...){
+	# djhm = djMTW[[2]]
+	if(barley & TWrange[1] == 52) {
 		TWrange[1] <- 40 
 	}
-	if(defaultDJ){
+	if(defaultDJmoist){
 		defM <- "Moisture"
-		defTW <- "TestWeight" 
 		altM <- "Moisture_HarvM"
-		altTW <- "TestWeight_HarvM" 
 	} else {
 		defM <- "Moisture_HarvM"
-		defTW <- "TestWeight_HarvM" 
 		altM <- "Moisture"
+	}
+
+	if(defaultDJweight){
+		defTW <- "TestWeight" 
+		altTW <- "TestWeight_HarvM" 
+	} else {
+		defTW <- "TestWeight_HarvM" 
 		altTW <- "TestWeight" 
 	}
 
 	missM <- is.na(djhm[[defM]])
 	missTW <- is.na(djhm[[defTW]])
-	
 
 	if(any(missM)){	
 		djhm[[defM]][missM] <- djhm[[altM]][missM]

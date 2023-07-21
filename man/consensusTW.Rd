@@ -4,17 +4,23 @@
 \alias{consensusTW}
 \title{consensusTW function}
 \usage{
-consensusTW(djhm, defaultDJ = FALSE, TWrange = c(55, 64),
-  barley = FALSE, ...)
+consensusTW(
+  djhm,
+  defaultDJmoist = TRUE,
+  defaultDJweight = TRUE,
+  TWrange = c(52, 64),
+  barley = FALSE,
+  ...
+)
 }
 \arguments{
 \item{djhm}{data.frame with 'Moisture', 'TestWeight' from th Dickey-John, and 'Moisture_HarvM' and 'TestWeight_HarvM' from the harvest master.}
 
-\item{defaultDJ}{logical. Should default values of moisture and test weight be from the dickey john? Harvest master otherwise.}
-
 \item{TWrange}{numeric. vector of length 2 to determeine valid test weights. default is c(55, 64)}
 
 \item{barley}{logical. Is barley?}
+
+\item{defaultDJ}{logical. Should default values of moisture and test weight be from the dickey john? Harvest master otherwise.}
 }
 \value{
 [value]
