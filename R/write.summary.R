@@ -10,7 +10,7 @@
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-write.summary <- function(locSum, testName, resultDir, digits = 2, addLSD = FALSE, ...){
+write.summary <- function(locSum, testName, resultDir = "./", digits = 2, addLSD = FALSE, ...){
 	# locSum = locSummary[[k]][[j]]; testName = j; resultDir = resultDir; digits = 2; addLSD = FALSE
 	# locSum = results; testName = "WheatlandSpring_2022_WAFVA"; resultDir = "results/"; digits = 2; addLSD = FALSE
 	if(length(locSum) == 1 & !any(names(locSum) %in% c("BLUE", "BLUP"))) {
