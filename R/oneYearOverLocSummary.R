@@ -11,7 +11,7 @@
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sortLoHi = NULL, allowDupEnt = TRUE, unitSep = "|", ...){
+oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sortLoHi = NULL, allowDupEnt = TRUE, unitSep = "|", fixed = NULL, random = NULL, printFit = FALSE, ...){
 # dF = testData[[k]]; traits = qtraits; addInfo = dfInfo(addEntry, by = "Line"); sortby = by; allowDupEnt = TRUE; locs = NULL; unitSep = "|"
 	if(any(table(dF$Line) > 1)){
 		
@@ -93,22 +93,24 @@ oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sort
 				if(any(table(dfi$Line) > 1)){
 
 					if(length(unique(dfi$Trial)) == 1 & length(unique(dfi$Bloc)) == 1){
-						fixFormi <- "~ Line"
-						mixFormi <- "~ (1|Line)"
+						fixFormi <- paste0("~ Line", fixed)
+						mixFormi <- paste0("~ (1|Line)", random)
 					} else if(length(unique(dfi$Trial)) == 1){
-						fixFormi <- "~ Bloc + Line"
-						mixFormi <- "~ (1|Bloc) + (1|Line)"
+						fixFormi <- paste0("~ Bloc + Line", fixed)
+						mixFormi <- paste0("~ (1|Bloc) + (1|Line)", random)
 					} else if(length(unique(dfi$Bloc)) == 1){
-						fixFormi <- "~ Trial + Line"
-						mixFormi <- "~ Trial + (1|Line)"
+						fixFormi <- paste0("~ Trial + Line", fixed)
+						mixFormi <- paste0("~ Trial + (1|Line)", random)
 					} else {
-						fixFormi <- "~ Trial + Trial:Bloc + Line"
-						mixFormi <- "~ Trial + (1|Trial:Bloc) + (1|Line)"
+						fixFormi <- paste0("~ Trial + Trial:Bloc + Line", fixed)
+						mixFormi <- paste0("~ Trial + (1|Trial:Bloc) + (1|Line)", random)
 					}
 
 					form <- formula(paste0("`", i, "`", fixFormi))
-					fixedFit <- lm(form, data = dfi)
-
+					if(printFit) {
+						fixedFit <- lm(form, data = dfi)
+						print(summary(fixedFit))
+					}
 					BLUE[[traitNameUnit]] <- fitlsmeans(form, "Line", data = dfi)
 
 					rform <- formula(paste0("`", i, "`", mixFormi))

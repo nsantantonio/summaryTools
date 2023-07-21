@@ -4,8 +4,19 @@
 \alias{oneYearOverLocSummary}
 \title{oneYearOverLocSummary function}
 \usage{
-oneYearOverLocSummary(dF, traits, locs = NULL, sortHiLo = NULL,
-  sortLoHi = NULL, allowDupEnt = TRUE, unitSep = "|", ...)
+oneYearOverLocSummary(
+  dF,
+  traits,
+  locs = NULL,
+  sortHiLo = NULL,
+  sortLoHi = NULL,
+  allowDupEnt = TRUE,
+  unitSep = "|",
+  fixed = NULL,
+  random = NULL,
+  printFit = FALSE,
+  ...
+)
 }
 \arguments{
 \item{dF}{[value]}
