@@ -228,7 +228,7 @@ correctWeight <- function(weight, moisture, stdMoisture = 13.5, barley = FALSE, 
  	}
  	ml1 <- moisture < 1
  	ml1[is.na(ml1)] <- FALSE
-	if(any(ml1)) stop("expecting moisture as a percent between 0 and 100, not between 0 and 1")
+	if(any(ml1)) warning("expecting moisture as a percent between 0 and 100, not between 0 and 1")
 	ratio <- (1 - 0.01 * moisture) / (1 - 0.01 * stdMoisture)
 	corWeight <- weight * ratio
 }
