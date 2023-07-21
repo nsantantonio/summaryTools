@@ -17,5 +17,5 @@ addTraitPercRank <- function(smry, trait, keep = "Line", calcPercMean = TRUE, si
 	whichTrait <- grep(trait, names(smry))[1]
 	if(calcPercMean) smryL[[paste0(gsub("\\..*", "", trait), "PercMean")]] <- as.integer(c(round(smry[[whichTrait]][di] / smry[[whichTrait]][si[1]] *100), rep(NA, 3)))
 	smryL[[paste0(gsub("\\..*", "", trait), "Rank")]] <- c(rank(sign*smry[[whichTrait]][di], ...), rep(NA, 3))
-	data.frame(smryL, smry[!names(smry) %in% keep])
+	data.frame(smryL, smry[!names(smry) %in% keep], check.names = FALSE)
 }
