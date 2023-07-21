@@ -12,7 +12,7 @@
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-readFieldBookDB <- function(path, ontology = NULL, printTraitTable = FALSE, exportNA = FALSE, printDup = FALSE, exportFullFB = FALSE, printDupPairs = TRUE, exportDupPairs = FALSE){
+readFieldBookDB <- function(path, ontology = NULL, printTraitTable = FALSE, exportNA = FALSE, printDup = FALSE, exportFullFB = FALSE, printDupPairs = FALSE, exportDupPairs = FALSE, traitAliasList = NULL){
 	# c("plot_name", "trait", "value", "timestamp", "person", "location", "number")
 	# path = toCleanDir; printDup = TRUE; printTraitTable = FALSE; exportNA = FALSE; printDup = TRUE; exportFullFB = FALSE; printDupPairs = TRUE; exportDupPairs = FALSE
 	if(file.exists(path) & !dir.exists(path)){
@@ -38,7 +38,14 @@ readFieldBookDB <- function(path, ontology = NULL, printTraitTable = FALSE, expo
 		}
 		# unique(lapply(fbL, names))
 		fb <- do.call(rbind, fbL)
-		fb$trait[fb$trait %in% c("Notes", "Comments", "comments")] <- "notes"
+		fb$trait <- gsub( " \\| ", "|", fb$trait)
+		
+		if(!is.null(traitAliasList)){
+			for(i in names(traitAliasList)) {
+				fb$trait[fb$trait %in% traitAliasList[[i]]] <- i
+			}
+		}
+		# fb$trait[fb$trait %in% c("Notes", "Comments", "comments")] <- "notes"
 		row.names(fb) <- NULL
 
 		if(exportFullFB) return(fb)
