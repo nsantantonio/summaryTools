@@ -10,7 +10,7 @@
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, allowDupEnt = TRUE, unitSep = "|", verbose = FALSE, ...){
+oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, allowDupEnt = TRUE, unitSep = "|", verbose = FALSE, fixed = NULL, random = NULL, printFit = FALSE, ...){
 	# dF = testData[[k]]; traits = qtraits; addInfo = dfInfo(addEntry, by = "Line"); sortHiLo = sortby; sortLoHi = NULL; unitSep = "|"; allowDupEnt = TRUE
 	# dF = nut; traits = "DON"
 	if(!all(c("Trial", "Line", "Entry", "Block") %in% names(dF))) stop("input data.frame must have columns 'Trial', 'Line', 'Entry', 'Block'") # need to update this! got distrcted and didnt finish
@@ -108,19 +108,22 @@ oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, a
 				if(sum(table(dfij$Line) > 1) > 1){
 
 					if(length(unique(dfij$Trial)) == 1 & length(unique(dfij$Bloc)) == 1){
-						fixFormi <- "~ Line"
-						mixFormi <- "~ (1|Line)"
+						fixFormi <- paste0("~ Line", fixed)
+						mixFormi <- paste0("~ (1|Line)", random)
 					} else if(length(unique(dfij$Trial)) == 1){
-						fixFormi <- "~ Bloc + Line"
+						fixFormi <- paste0("~ Bloc + Line", fixed)
 						# mixFormi <- "~ (1|Bloc) + (1|Line)"
-						mixFormi <- "~ Bloc + (1|Line)" # Bloc is fixed here since there usually isnt more than 2 or 3 blocks per
+						mixFormi <- paste0("~ Bloc + (1|Line)", random) # Bloc is fixed here since there usually isnt more than 2 or 3 blocks per, fixed)
 					} else {
-						fixFormi <- "~ Trial + Trial:Bloc + Line"
-						mixFormi <- "~ Trial + (1|Trial:Bloc) + (1|Line)"
+						fixFormi <- paste0("~ Trial + Trial:Bloc + Line", fixed)
+						mixFormi <- paste0("~ Trial + (1|Trial:Bloc) + (1|Line)", random)
 					}
 
 					form <- formula(paste0("`", i, "`", fixFormi))
-					fixedFit <- lm(form, data = dfij)
+					if(printFit){
+						fixedFit <- lm(form, data = dfij)
+						print(summary(fixedFit))
+					}
 
 					BLUE[[traitNameUnit]] <- fitlsmeans(form, "Line", data = dfij)
 

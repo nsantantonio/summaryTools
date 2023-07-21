@@ -4,8 +4,19 @@
 \alias{oneYearOneLocSummary}
 \title{oneYearOneLocSummary function}
 \usage{
-oneYearOneLocSummary(dF, traits, sortHiLo = NULL, sortLoHi = NULL,
-  allowDupEnt = TRUE, unitSep = "|", verbose = FALSE, ...)
+oneYearOneLocSummary(
+  dF,
+  traits,
+  sortHiLo = NULL,
+  sortLoHi = NULL,
+  allowDupEnt = TRUE,
+  unitSep = "|",
+  verbose = FALSE,
+  fixed = NULL,
+  random = NULL,
+  printFit = FALSE,
+  ...
+)
 }
 \arguments{
 \item{dF}{[value]}
