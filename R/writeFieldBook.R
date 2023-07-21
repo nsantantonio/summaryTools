@@ -12,7 +12,7 @@
 writeFieldBook <- function(testDf, traits, keepCols = NULL, unitSep = "|"){
 # testDf = testData[[k]]; traits = traits; keepCols = NULL; unitSep = "|"
 	if(is.null(keepCols)){
-		keepCols <- c("Year", "Location", "Trial", "^plot_name$", "^plot$", "^bloc", "^ent", "^line$", "^pedigree$", "^pass$", "^range$")
+		keepCols <- c("Year", "Location", "Trial", "^plot_name$", "^plot$", "^bloc", "^ent", "^line$", "^pedigree$", "^pass$", "^range$", "^NotesHM$", "^RangeHM$", "^RowHM$")
 	}
 	trtCols <- grep(paste(gsub("\\|", "\\\\|", traits), collapse = "|"), names(testDf))
 	traitNames <- names(testDf)[trtCols]
