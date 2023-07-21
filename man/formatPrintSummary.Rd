@@ -4,7 +4,14 @@
 \alias{formatPrintSummary}
 \title{formatPrintSummary function}
 \usage{
-formatPrintSummary(smry, infoCols = "Line", tex = TRUE)
+formatPrintSummary(
+  smry,
+  infoCols = "Line",
+  tex = TRUE,
+  longtable = FALSE,
+  digits = NULL,
+  ...
+)
 }
 \arguments{
 \item{smry}{summary output from oneYearOneLocSummary, oneYearOverLocSummary, or multiYearSummary}
