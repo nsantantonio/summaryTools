@@ -14,7 +14,7 @@
 readWadeExcel <- function(path, startLine = NULL, stopLine = NULL, keepLSD = FALSE, tooLong = 33, ...){
 	require(readxl)
 	raw <- as.data.frame(read_excel(path, ...))
-	# raw <- as.data.frame(read_excel("/home/nsant/Dropbox/releases2022/dataSummaries/VA17W-75/19SW-Data Tables-Final.xlsx", sheet = "OverLocation"))
+	# raw <- as.data.frame(read_excel(path, sheet = "OverLocation")); startLine = NULL; stopLine = NULL; keepLSD = FALSE; tooLong = 33;
 	missFirst <- is.na(raw[[1]])
 	notMiss <- which(!missFirst)
 	isMiss <- which(missFirst)
@@ -40,8 +40,21 @@ readWadeExcel <- function(path, startLine = NULL, stopLine = NULL, keepLSD = FAL
 	for(i in 2:length(raw)){
 		varName <- raw[[i]][1:{startLine-1}]
 		varName[is.na(varName)] <- ""
-		if(!hasTitle) varName <- c(i, varName)
-		varName <- gsub("\\s+", " ", trimws(paste(varName, collapse = " ")))
+		parens <- grep("\\(", varName)
+		if(length(parens)){
+			unit <- gsub("\\(|\\)", "", varName[[parens[1]]])
+
+			if(length(parens) > 1){
+				nobs <- paste0("(", gsub("\\(|\\)", "", varName[[parens[2]]]), ")")
+			} else {
+				nobs <- ""
+			}
+			if(!hasTitle) varName <- c(i, varName) # what is this for?
+			varName <- paste0(gsub("\\s+", "", trimws(paste(varName[1:{min(parens)-1}], collapse = ""))), "|", unit, nobs) 
+		} else {
+			varName <- gsub("\\s+", " ", trimws(paste(varName, collapse = " ")))
+		}
+		
 		names(dat)[i] <- varName
 	}
 
