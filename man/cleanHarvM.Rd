@@ -4,8 +4,17 @@
 \alias{cleanHarvM}
 \title{cleanHarvM function}
 \usage{
-cleanHarvM(hmi, lbs = TRUE, forgotCycleThreshold = 0.2, qnt = 0.99,
-  keepCols = NULL)
+cleanHarvM(
+  hmi,
+  blockName,
+  lbs = TRUE,
+  forgotCycleThreshold = 0.2,
+  lowMoistThreshold = 9,
+  qnt = 0.99,
+  keepCols = NULL,
+  keepSeq = FALSE,
+  rmPlotPattern = NULL
+)
 }
 \arguments{
 \item{hmi}{[value]}
@@ -13,6 +22,8 @@ cleanHarvM(hmi, lbs = TRUE, forgotCycleThreshold = 0.2, qnt = 0.99,
 \item{lbs}{[value]. Default is TRUE}
 
 \item{forgotCycleThreshold}{[value]. Default is 0.2}
+
+\item{lowMoistThreshold}{threshold for too low moisture. records with low moisture will be set to NA. Default is 9}
 
 \item{qnt}{[value]. Default is 0.99}
 }
