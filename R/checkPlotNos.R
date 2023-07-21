@@ -9,12 +9,18 @@
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-checkPlotNos <- function(x, type, testName = NULL){
+checkPlotNos <- function(x, type, testName = NULL, rmChars = TRUE){
+	# x = plotNos
 	if(length(x) == 0){stop("No ", type, " Records! Check input file.")}
-	if(class(x) == "character") numx <- as.numeric(x) else numx <- x
+	if(class(x) == "character") {
+		if(rmChars) x <- x[!grepl("[A-z]", x)]
+		numx <- as.numeric(x)
+	} else {
+		numx <- x
+	}
 	if(class(x) %in% c("numeric", "integer")) x <- as.character(x)
-	minx <- min(numx)
-	maxx <- max(numx)
+	minx <- min(numx, na.rm = TRUE)
+	maxx <- max(numx, na.rm = TRUE)
 	if (minx > 100){
 		reps <- substr(x, 1, 1)
 		# tabRep <- table(reps)
@@ -24,7 +30,7 @@ checkPlotNos <- function(x, type, testName = NULL){
 			ncharx <- max(ncharx)
 		}
 		nReps <- as.numeric(unique(reps))
-		maxEnt <- max(as.numeric(substr(x, 2, ncharx)))
+		maxEnt <- max(as.numeric(substr(x, 2, ncharx)), na.rm = TRUE)
 		if (ncharx == 4) expon <- 1e3 else expon <- 1e2
 		allPlots <- unlist(lapply(nReps, function(x) x * expon + 1:maxEnt))
 	} else {

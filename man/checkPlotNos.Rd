@@ -4,7 +4,7 @@
 \alias{checkPlotNos}
 \title{checkPlotNos function}
 \usage{
-checkPlotNos(x, type, testName = NULL)
+checkPlotNos(x, type, testName = NULL, rmChars = TRUE)
 }
 \arguments{
 \item{x}{[value]}
