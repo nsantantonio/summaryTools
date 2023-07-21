@@ -2,8 +2,7 @@
 % Please edit documentation in R/fieldHeatMap.R
 \name{fieldHeatmap}
 \alias{fieldHeatmap}
-\title{mergreNotes function
-fieldHeatmap function}
+\title{fieldHeatmap function}
 \usage{
 fieldHeatmap(dF, trait, cVar = "pass", rVar = "range", ...)
 }
