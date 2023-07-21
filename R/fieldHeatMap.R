@@ -1,4 +1,3 @@
-#' mergreNotes function
 #' fieldHeatmap function
 #' 
 #' function to draw heatmaps of field trials
@@ -12,7 +11,7 @@
 #' @examples betterImage(volcano)
 #' @export
 fieldHeatmap <- function(dF, trait, cVar = "pass", rVar = "range", ...){
-	# dF = testkl; trait = j; col = magma(50); cVar = "pass"; rVar = "range"
+	# dF = prelimAR; trait = "GrainYield"; col = magma(50); cVar = "pass"; rVar = "range"
 	par(bg = "gray")
 	par(mar = c(0, 0, 4, 0))
 	dF <- dF[!is.na(dF[[rVar]]) & !is.na(dF[[cVar]]), ]

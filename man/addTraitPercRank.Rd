@@ -4,8 +4,14 @@
 \alias{addTraitPercRank}
 \title{formatPrintSummary function}
 \usage{
-addTraitPercRank(smry, trait, keep = "Line", calcPercMean = TRUE,
-  sign = -1, ...)
+addTraitPercRank(
+  smry,
+  trait,
+  keep = "Line",
+  calcPercMean = TRUE,
+  sign = -1,
+  ...
+)
 }
 \arguments{
 \item{smry}{summary output from oneYearOneLocSummary, oneYearOverLocSummary, or multiYearSummary}

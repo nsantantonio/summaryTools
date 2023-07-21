@@ -4,8 +4,15 @@
 \alias{gramsToYield}
 \title{lbsToYield function}
 \usage{
-gramsToYield(g, moisture, sqft = NULL, sqm = NULL, metric = FALSE,
-  barley = FALSE, ...)
+gramsToYield(
+  g,
+  moisture,
+  sqft = NULL,
+  sqm = NULL,
+  metric = FALSE,
+  barley = FALSE,
+  ...
+)
 }
 \arguments{
 \item{g}{numeric. Grain mass in grams.}
