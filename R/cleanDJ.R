@@ -9,12 +9,13 @@
 #' @param maxTW [value]. Default is 63
 #' @param moistTooHighNA [value]. Default is TRUE
 #' @param outsideTWrangeNA [value]. Default is FALSE
+#' @param rmChars [value]. Should plot numbers with characters [A-z] be removed? Default is FALSE
 #' @param barley [value]. Default is FALSE
 #' @return [value]
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-cleanDJ <- function(djdf, year, testName = NULL, minTW = 55, maxTW = 64, moistThresh = 16, moistTooHighNA = TRUE, outsideTWrangeNA = FALSE, barley = FALSE){
+cleanDJ <- function(djdf, year, testName = NULL, minTW = 55, maxTW = 64, moistThresh = 16, moistTooHighNA = TRUE, outsideTWrangeNA = FALSE, rmChars = FALSE, barley = FALSE){
 	# djdf = djij; testName = i; year = yr; minTW = 55; maxTW = 64; moistThresh = 16; moistTooHighNA = TRUE; outsideTWrangeNA = FALSE; barley = FALSE
 	if(barley){
 		if(minTW == 55){
@@ -47,6 +48,7 @@ cleanDJ <- function(djdf, year, testName = NULL, minTW = 55, maxTW = 64, moistTh
 		djdf[[9]] <- gsub(",", "", djdf[[9]])
 	}
 	djdf$Date.Time <- formatTime(djdf$Date.Time, year)
+	djdf <- unique(djdf)
 
 	djdf$Moisture[is.na(djdf$Moisture)] <- 0
 	if(any(djdf$Moisture == 0) | any(djdf$Moisture > 25)){
@@ -118,10 +120,14 @@ cleanDJ <- function(djdf, year, testName = NULL, minTW = 55, maxTW = 64, moistTh
 			djclean[highMoistureNotCorrected, c("Weight")] <- NA
 		}
 	}
+
+	if(rmChars) {
+		plotNos <- gsub(".*_", "", djclean$Sample.ID)
+		djclean <- djclean[!grepl("[A-z]", plotNos), ]
+	}
 	djclean <- djclean[order(as.numeric(gsub(".*_", "", djclean$Sample.ID))),]
 
-	plotNos <- gsub(".*_", "", djclean$Sample.ID)
-	checkPlotNos(plotNos, testName = testName, type = "Dickey John")
+	checkPlotNos(gsub(".*_", "", djclean$Sample.ID), testName = testName, type = "Dickey John")
 	if(length(unique(djclean$Product)) > 1){
 		prodTab <- sort(table(djclean$Product))
 		message(paste0("\nMultiple grain types detected! Please check that all samples were run under the correct product type.\nThese records differ from the most common product type: ", names(prodTab[length(prodTab)]), "\n"))

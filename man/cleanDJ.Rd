@@ -4,9 +4,18 @@
 \alias{cleanDJ}
 \title{cleanDJ function}
 \usage{
-cleanDJ(djdf, year, testName = NULL, minTW = 55, maxTW = 64,
-  moistThresh = 16, moistTooHighNA = TRUE, outsideTWrangeNA = FALSE,
-  barley = FALSE)
+cleanDJ(
+  djdf,
+  year,
+  testName = NULL,
+  minTW = 55,
+  maxTW = 64,
+  moistThresh = 16,
+  moistTooHighNA = TRUE,
+  outsideTWrangeNA = FALSE,
+  rmChars = FALSE,
+  barley = FALSE
+)
 }
 \arguments{
 \item{djdf}{[value]}
@@ -22,6 +31,8 @@ cleanDJ(djdf, year, testName = NULL, minTW = 55, maxTW = 64,
 \item{moistTooHighNA}{[value]. Default is TRUE}
 
 \item{outsideTWrangeNA}{[value]. Default is FALSE}
+
+\item{rmChars}{[value]. Should plot numbers with characters [A-z] be removed? Default is FALSE}
 
 \item{barley}{[value]. Default is FALSE}
 }
