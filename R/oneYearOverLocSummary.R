@@ -77,7 +77,7 @@ oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sort
 			dfi <- whichTrials(dF, i)
 			dfi <- dfi[!is.na(dfi[[i]]),] # added after last years analysis to deal with traits measured in one loc, one block. 
 
-			if(nrow(dfi) > 0){
+			if(nrow(dfi) > 1){
 				whichNameUnit <- which(traits == i)
 				# whichNameUnit <- grep(i, traitNames)
 				traitNameUnit <- trimws(paste(sapply(trtnu, "[[", whichNameUnit), collapse = unitSep))
