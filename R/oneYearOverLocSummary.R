@@ -127,28 +127,37 @@ oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sort
 					BLUP[[traitNameUnit]] <- list(BLUP = unr, mean = mean(unr), h2 = NA, sigma = NA)
 					message(paste0(i, " is unreplicated (only scored in one environment and/or rep). Returning raw phenotypes"))
 				}
+			} else if (nrow(dfi) == 1) {
+				warning("Data.frame only has one row:")
+				print(dfi)
+				message("You may have a single record in a trait that wasnt scored (e.g. Lodging which defaults to 50...")
+				# next
 			}
 		}
+		if(is.null(BLUE)){
+			message(paste0("No summary was [produced for ", unique(dF$Trial), ". Check that you dont have a trial with a single phenotype."))
+			return(NULL)
+		} else {
+			lsmeansTable <- makeBLUtab(BLUE, sortHiLo = sortHiLoTrt, sortLoHi = sortLoHiTrt, ...)
+			blupTable <- makeBLUtab(BLUP, sortHiLo = sortHiLoTrt, sortLoHi = sortLoHiTrt, ...)
+			names(lsmeansTable)[names(lsmeansTable) == "effect"] <- "Line"
+			names(blupTable)[names(blupTable) == "effect"] <- "Line"
+			if (addNotes){
+				lsmeansTable <- mergeNotes(lsmeansTable, lineEntNotes)
+				blupTable <- mergeNotes(blupTable, lineEntNotes)
+			}
+			if (is.null(sortHiLoTrt) & is.null(sortLoHiTrt) & "Entry" %in% names(lsmeansTable)) {
+				lsmeansTable <- lsmeansTable[order(lsmeansTable[["Entry"]]),]
+				blupTable <- blupTable[order(blupTable[["Entry"]]),]
+			# use of mergeNotes should fix this need to resort afterward.
+			# } else if (!is.null(sortByTrt) & addNotes){
+			# 	if(!is.null(sortHiLo)) neg <- -1 else neg <- 1
+			# 	lsmeansTable <- lsmeansTable[order(neg * lsmeansTable[[sortByTrt]]),]
+			# 	blupTable <- blupTable[order(neg * lsmeansTable[[sortByTrt]]),]
+			}
 
-		lsmeansTable <- makeBLUtab(BLUE, sortHiLo = sortHiLoTrt, sortLoHi = sortLoHiTrt, ...)
-		blupTable <- makeBLUtab(BLUP, sortHiLo = sortHiLoTrt, sortLoHi = sortLoHiTrt, ...)
-		names(lsmeansTable)[names(lsmeansTable) == "effect"] <- "Line"
-		names(blupTable)[names(blupTable) == "effect"] <- "Line"
-		if (addNotes){
-			lsmeansTable <- mergeNotes(lsmeansTable, lineEntNotes)
-			blupTable <- mergeNotes(blupTable, lineEntNotes)
+			return(list(BLUE = lsmeansTable, BLUP = blupTable))
 		}
-		if (is.null(sortHiLoTrt) & is.null(sortLoHiTrt) & "Entry" %in% names(lsmeansTable)) {
-			lsmeansTable <- lsmeansTable[order(lsmeansTable[["Entry"]]),]
-			blupTable <- blupTable[order(blupTable[["Entry"]]),]
-		# use of mergeNotes should fix this need to resort afterward.
-		# } else if (!is.null(sortByTrt) & addNotes){
-		# 	if(!is.null(sortHiLo)) neg <- -1 else neg <- 1
-		# 	lsmeansTable <- lsmeansTable[order(neg * lsmeansTable[[sortByTrt]]),]
-		# 	blupTable <- blupTable[order(neg * lsmeansTable[[sortByTrt]]),]
-		}
-
-		return(list(BLUE = lsmeansTable, BLUP = blupTable))
 	} else {
 		message(paste0(unique(dF$Trial), " is an unreplicated trial. Returning nothing"))
 		return(NULL)
