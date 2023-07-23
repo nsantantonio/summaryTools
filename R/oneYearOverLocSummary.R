@@ -134,7 +134,7 @@ oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sort
 				# next
 			}
 		}
-		if(is.null(BLUE)){
+		if(length(BLUE) == 0){
 			message(paste0("No summary was [produced for ", unique(dF$Trial), ". Check that you dont have a trial with a single phenotype."))
 			return(NULL)
 		} else {
