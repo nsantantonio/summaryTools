@@ -9,6 +9,7 @@
 #' @examples # none
 #' @export
 cleanScores <- function(fb, scoreTraits = NULL, zeroThreshold = 0.5){
+	# fb <- fb[[8]]
 	isScore <- function(x){
 		if(is.numeric(x)){
 			s <- x >= 0 & x <= 9
@@ -30,7 +31,7 @@ cleanScores <- function(fb, scoreTraits = NULL, zeroThreshold = 0.5){
 		} else {
 			repl <- as.integer(substr(plotChr, 1, 1))
 			scoredRepl <- !tapply(fb[[trait]], repl, function(x) all(is.na(x)))
-			toZero <- repl %in% scoredRepl & is.na(fb[[trait]])
+			toZero <- repl %in% names(scoredRepl)[scoredRepl] & is.na(fb[[trait]])
 		}
 		return(toZero)
 	}
@@ -42,7 +43,7 @@ cleanScores <- function(fb, scoreTraits = NULL, zeroThreshold = 0.5){
 		# print(scoreTraits)
 	}
 
-	# I NEED TO FIX THIS!!!! setting all NA to 0s, whern some reps not scored. 
+	# I NEED TO FIX THIS!!!! setting all NA to 0s, whern some reps not scored. Fixed aug3 2023
 	if(length(scoreTraits)){
 		scoreCols <- grep(paste(scoreTraits, collapse = "|"), names(fb))
 		percMiss <- sapply(fb[scoreCols], function(x) sum(is.na(x)) / length(x))
@@ -50,7 +51,6 @@ cleanScores <- function(fb, scoreTraits = NULL, zeroThreshold = 0.5){
 		needZeros <- names(fb)[scoreCols][percMiss >= zeroThreshold & percMiss < 1]
 		
 		for(i in needZeros){
-			# fb[is.na(fb[[i]]), i] <- 0
 			actuallyNeedZeros <- checkRep(fb, i)
 			if(any(actuallyNeedZeros)) fb[actuallyNeedZeros, i] <- 0
 		}
