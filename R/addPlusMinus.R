@@ -8,7 +8,7 @@
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-addPlusMinus <- function(smry, traits){
+addPlusMinus <- function(smry, traits = NULL){
 	if(is.list(smry) & !is.data.frame(smry)) smry <- smry$BLUE
 	rownames(smry) <- smry$Line
 
@@ -20,6 +20,10 @@ addPlusMinus <- function(smry, traits){
 	rownames(stat) <- c("mean", "LSD", "CV")
 	lastL <- avg -1 
 	BLUE <- smry[1:lastL,]
+
+	if(is.null(traits)){
+		traits <- colnames(stat[sapply(stat, function(x) is.numeric(x) & all(!is.na(x)))])
+	}
 	trtCols <- NULL
 	for(i in traits) trtCols[i] <- which(i == names(BLUE))
 	firstTrt <- min(trtCols)
