@@ -4,7 +4,7 @@
 \alias{addPlusMinus}
 \title{addPlusMinus function}
 \usage{
-addPlusMinus(smry, traits)
+addPlusMinus(smry, traits = NULL)
 }
 \arguments{
 \item{smry}{summary output from oneYearOneLocSummary, oneYearOverLocSummary, or multiYearSummary}

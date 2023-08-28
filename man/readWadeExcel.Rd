@@ -4,14 +4,8 @@
 \alias{readWadeExcel}
 \title{readWadeExcel function}
 \usage{
-readWadeExcel(
-  path,
-  startLine = NULL,
-  stopLine = NULL,
-  keepLSD = FALSE,
-  tooLong = 33,
-  ...
-)
+readWadeExcel(path, startLine = NULL, stopLine = NULL,
+  keepLSD = FALSE, tooLong = 33, ...)
 }
 \arguments{
 \item{path}{file path}

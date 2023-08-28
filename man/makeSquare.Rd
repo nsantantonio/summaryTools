@@ -4,14 +4,8 @@
 \alias{makeSquare}
 \title{makeSquare function}
 \usage{
-makeSquare(
-  dF,
-  dvars = NULL,
-  range = "range",
-  pass = "pass",
-  dummy = "dummy",
-  by = NULL
-)
+makeSquare(dF, dvars = NULL, range = "range", pass = "pass",
+  dummy = "dummy", imputeFactors = TRUE, by = NULL)
 }
 \arguments{
 \item{dF}{data.frame of field trial,}

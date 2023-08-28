@@ -4,17 +4,10 @@
 \alias{readFieldBookDB}
 \title{readFieldBookDB function}
 \usage{
-readFieldBookDB(
-  path,
-  ontology = NULL,
-  printTraitTable = FALSE,
-  exportNA = FALSE,
-  printDup = FALSE,
-  exportFullFB = FALSE,
-  printDupPairs = FALSE,
-  exportDupPairs = FALSE,
-  traitAliasList = NULL
-)
+readFieldBookDB(path, ontology = NULL, printTraitTable = FALSE,
+  exportNA = FALSE, printDup = FALSE, exportFullFB = FALSE,
+  printDupPairs = FALSE, exportDupPairs = FALSE,
+  traitAliasList = NULL)
 }
 \arguments{
 \item{path}{character. Path to file or directory containing multiple database files exported from Fieldbook app.}

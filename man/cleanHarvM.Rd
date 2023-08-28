@@ -4,17 +4,9 @@
 \alias{cleanHarvM}
 \title{cleanHarvM function}
 \usage{
-cleanHarvM(
-  hmi,
-  blockName,
-  lbs = TRUE,
-  forgotCycleThreshold = 0.2,
-  lowMoistThreshold = 9,
-  qnt = 0.99,
-  keepCols = NULL,
-  keepSeq = FALSE,
-  rmPlotPattern = NULL
-)
+cleanHarvM(hmi, blockName, lbs = TRUE, forgotCycleThreshold = 0.2,
+  lowMoistThreshold = 9, qnt = 0.99, keepCols = NULL,
+  keepSeq = FALSE, rmPlotPattern = NULL)
 }
 \arguments{
 \item{hmi}{[value]}
