@@ -4,8 +4,15 @@
 \alias{dataToFb}
 \title{dataToFb function}
 \usage{
-dataToFb(dF, traits, plot_name = "plot_name", timestamp = NULL,
-  person = NULL, location = NULL, number = 1)
+dataToFb(
+  dF,
+  traits,
+  plot_name = "plot_name",
+  timestamp = NULL,
+  person = NULL,
+  location = NULL,
+  number = 1
+)
 }
 \arguments{
 \item{dF}{data.frame with plot_name and triat columns. This would tpicaly be data recorded on a spreadshet for whatever reason.}

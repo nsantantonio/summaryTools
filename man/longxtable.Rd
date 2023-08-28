@@ -4,10 +4,22 @@
 \alias{longxtable}
 \title{longxtable function}
 \usage{
-longxtable(tab, aln = NULL, pad = 0, digits = 2, caption = NULL,
-  label = NULL, size = "footnotesize", footNotes = NULL,
-  include.rownames = TRUE, formatColNames = TRUE, statsLine = TRUE,
-  specialChars = "#", fitPageWidth = TRUE, ...)
+longxtable(
+  tab,
+  aln = NULL,
+  pad = 0,
+  digits = 2,
+  caption = NULL,
+  label = NULL,
+  size = "footnotesize",
+  footNotes = NULL,
+  include.rownames = TRUE,
+  formatColNames = TRUE,
+  statsLine = TRUE,
+  specialChars = "#",
+  fitPageWidth = TRUE,
+  ...
+)
 }
 \arguments{
 \item{tab}{table to be printed into a latex table}

@@ -4,8 +4,15 @@
 \alias{cleanScale}
 \title{cleanScale function}
 \usage{
-cleanScale(scl, year, testName = NULL, tare = NULL, minWt = 500,
-  maxWt = 6000, rmDup = FALSE)
+cleanScale(
+  scl,
+  year,
+  testName = NULL,
+  tare = NULL,
+  minWt = 500,
+  maxWt = 6000,
+  rmDup = FALSE
+)
 }
 \arguments{
 \item{scl}{[value]}

@@ -4,8 +4,14 @@
 \alias{write.summary}
 \title{write.summary function}
 \usage{
-write.summary(locSum, testName, resultDir = "./", digits = 2,
-  addLSD = FALSE, ...)
+write.summary(
+  locSum,
+  testName,
+  resultDir = "./",
+  digits = 2,
+  addLSD = FALSE,
+  ...
+)
 }
 \arguments{
 \item{locSum}{[value]}

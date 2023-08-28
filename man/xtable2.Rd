@@ -4,10 +4,21 @@
 \alias{xtable2}
 \title{xtable2 function}
 \usage{
-xtable2(tab, aln = NULL, pad = 0, digits = 2, caption = NULL,
-  label = NULL, size = "footnotesize", footNotes = NULL,
-  include.rownames = TRUE, formatColNames = TRUE, statsLine = TRUE,
-  specialChars = c("#"), ...)
+xtable2(
+  tab,
+  aln = NULL,
+  pad = 0,
+  digits = 2,
+  caption = NULL,
+  label = NULL,
+  size = "footnotesize",
+  footNotes = NULL,
+  include.rownames = TRUE,
+  formatColNames = TRUE,
+  statsLine = TRUE,
+  specialChars = c("#"),
+  ...
+)
 }
 \arguments{
 \item{tab}{table to be printed into a latex table}

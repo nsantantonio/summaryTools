@@ -4,8 +4,7 @@
 \alias{mergeFieldData}
 \title{mergeFieldData function}
 \usage{
-mergeFieldData(fb, dj, scl, sqft = 45, testName = NULL, year = NULL,
-  ...)
+mergeFieldData(fb, dj, scl, sqft = 45, testName = NULL, year = NULL, ...)
 }
 \arguments{
 \item{fb}{[value]}
