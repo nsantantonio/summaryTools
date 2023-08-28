@@ -47,8 +47,7 @@ mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialD
 			}
 		}
 	}
-	# head(fb[[1]])
-	# fb <- fb[names(fb) %in% names(scl)]
+
 	yldL <- list()
 	if (!is.null(scl) & !is.null(dj)){		
 		names(scl) <- paste0(testName, "_", year, "_", recodeLoc(recodeLoc(names(scl)), locPattern = locCode)) # will accept either BLAVA or blacksburg
@@ -72,8 +71,6 @@ mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialD
 		if (length(needConsensusTW)) {
 			for(i in needConsensusTW) {
 				djMTW[[i]] <- consensusTW(djMTW[[i]], ...)
-				# djMTW[[i]] <- consensusTW(djMTW[[i]])
-				# djMTW[[i]] <- consensusTW(djMTW[[i]], barley = barley, defaultDJ = defaultDJ)
 			}
 		}
 		
@@ -89,6 +86,13 @@ mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialD
 		} else {
 			sqft <- rep(sqft, length(trialNames))
 			names(sqft) <- trialNames
+		}
+
+		needConsensusYld <- which(sapply(scl, function(x) all(c("netWeight", "netWeight_HarvM") %in% names(x))))
+		if (length(needConsensusYld)) {
+			for(i in needConsensusYld) {
+				scl[[i]] <- consensusYld(scl[[i]], ...)
+			}
 		}
 		for(i in yieldTrials){
 			# scldj <- merge(sclNW[[i]], djMTW[[i]], by = "plot_name", all = TRUE)
