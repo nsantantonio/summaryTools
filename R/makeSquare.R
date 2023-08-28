@@ -13,9 +13,26 @@
 #' @examples # none
 #' @export
 
-makeSquare <- function(dF, dvars = NULL, range = "range", pass = "pass", dummy = "dummy", by = NULL){
-#	dF = jcHM; range = "Range"; pass = "Row"; by = "Location"; dvars = c("Block", "Line")
+makeSquare <- function(dF, dvars = NULL, range = "range", pass = "pass", dummy = "dummy", imputeFactors = TRUE, by = NULL){
+#	dF = yldPreObs; range = "range"; pass = "pass"; by = "blockName"; dvars = c("Line"); dummy = "dummy"
+	# dF <- dF[dF[[by]] == "jinkinsCenterV", ];
 	if(any(!c(range, pass) %in% names(dF))) stop("columns 'range' and 'pass' must be in dF!")
+	if(is.factor(dF[[range]])) {
+		rangeLevs <- levels(dF[[range]])
+		dF[[range]] <- as.numeric(dF[[range]])
+		rangeFactor <- TRUE
+
+	} else {
+		rangeFactor <- FALSE
+	}
+	if(is.factor(dF[[pass]])) {
+		passLevs <- levels(dF[[pass]])
+		dF[[pass]] <- as.numeric(dF[[pass]])
+		passFactor <- TRUE
+	} else {
+		passFactor <- FALSE
+	}
+
 	if(!is.null(by)){
 		dfL <- list()
 		for(i in unique(dF[[by]])){
@@ -34,8 +51,27 @@ makeSquare <- function(dF, dvars = NULL, range = "range", pass = "pass", dummy =
 		# dim(dF)
 		dF  <- merge(dF, allRangePass, by = c(range, pass), all = TRUE)
 		if(!is.null(dvars)) {
+			for(i in dvars){
+				levels(dF[[i]]) <- c(levels(dF[[i]]), dummy)
+			}
 			dF[pad, dvars] <- dummy
 		}
+		if(imputeFactors){
+			dfclass <- sapply(dF, class)
+			needDummyFact <- names(dF)[dfclass %in% "factor" & !names(dF) %in% dvars]
+			for(i in needDummyFact){
+				for(j in which(is.na(dF[[i]]))){
+					if(j == 1) {
+						dF[[i]][j] <- dF[[i]][which(!is.na(dF[[i]]))[1]]
+					} else {
+						dF[[i]][j] <- dF[[i]][j-1]
+					}
+				}
+			}
+		}
 	}
+
+	if(rangeFactor) dF[[range]] <- factor(dF[[range]], levels = rangeLevs)
+	if(passFactor) dF[[pass]] <- factor(dF[[pass]], levels = passLevs)
 	return(dF)
 }
