@@ -3,8 +3,9 @@
 #' function to create a consensus test weight and moisture
 #'
 #' @param djhm data.frame with 'Moisture', 'TestWeight' from th Dickey-John, and 'Moisture_HarvM' and 'TestWeight_HarvM' from the harvest master. 
-#' @param defaultDJ logical. Should default values of moisture and test weight be from the dickey john? Harvest master otherwise.
-#' @param TWrange numeric. vector of length 2 to determeine valid test weights. default is c(55, 64)
+#' @param defaultDJmoist logical. Should default values of moisture be from the dickey john? Harvest master otherwise.
+#' @param defaultDJweight logical. Should default values of test weight be from the dickey john? Harvest master otherwise.
+#' @param TWrange numeric. vector of length 2 to determeine valid test weights. default is c(52, 64)
 #' @param barley logical. Is barley?
 #' @return [value]
 #' @details [fill in details here]
