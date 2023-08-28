@@ -12,25 +12,49 @@
 #' @examples # none
 #' @export
 multiYearSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sortLoHi = NULL, allowDupEnt = TRUE, blockName = "Block", unitSep = "|", addNoTrial = TRUE, ...){
-	# dF = hrw18to22; traits = trts; locs = NULL; sortHiLo = NULL; sortLoHi = NULL; allowDupEnt = TRUE; blockName = "Block"; unitSep= "|"; addNoTrial = TRUE
+	# dF = sw3yr; traits = trts; locs = NULL; sortHiLo = NULL; sortLoHi = NULL; allowDupEnt = TRUE; blockName = "Block"; unitSep= "|"; addNoTrial = TRUE
 	if(any(table(dF$Line) > 1)){
 
+		# traits <- gsub("\\s*\\(.*|\\s*\n|\\|.*", "", traits)
+		# trtCols <- sapply(traits, function(x) grep(x, names(dF)))
+		# if(any(sapply(trtCols, length) > 1)) {
+		# 	stop("Multiple columns match a single trait")
+		# }
+		# trtCols <- unlist(trtCols[sapply(trtCols, length) > 0])
+		# traits <- traits[traits %in% names(trtCols)]
+		# traitNames <- names(dF)[trtCols]
+
+
+		# names(dF)[names(dF) %in% traitNames] <- trimws(gsub("\n.*|\\(.*|\\|.*", "", names(dF)[names(dF) %in% traitNames]))
+
+		if(!all(c("Trial", "Line", "Block") %in% names(dF))) stop("input data.frame must have columns 'Trial', 'Line', 'Block'") # need to update this! got distrcted and didnt finish
 		traits <- gsub("\\s*\\(.*|\\s*\n|\\|.*", "", traits)
+		# trtCols <- grep(paste(traits, collapse = "|"), names(dF))
 		trtCols <- sapply(traits, function(x) grep(x, names(dF)))
-		if(any(sapply(trtCols, length) > 1)) {
-			stop("Multiple columns match a single trait")
-		}
 		trtCols <- unlist(trtCols[sapply(trtCols, length) > 0])
+		
+		numtrait <- sapply(dF[trtCols], is.numeric)
+		charTrtCols <- trtCols[!numtrait]
+		trtCols <- trtCols[numtrait]
+		
 		traits <- traits[traits %in% names(trtCols)]
 		traitNames <- names(dF)[trtCols]
 
 
+	# names(dF)[names(dF) %in% traitNames] <- gsub("\n.*", "", names(dF)[names(dF) %in% traitNames])
 		names(dF)[names(dF) %in% traitNames] <- trimws(gsub("\n.*|\\(.*|\\|.*", "", names(dF)[names(dF) %in% traitNames]))
-
 		trtnu <- cleanTraitNames(traitNames)
 
 		if(!is.null(locs)){
 			dF <- dF[grep(paste(locs, collapse = "|"), dF$Trial), ]
+		}
+
+
+		if(any(!is.na(dF[charTrtCols]))){
+			lineEntNotes <- compileNotes(dF, charTrtCols)
+			addNotes <- TRUE
+		} else {
+			addNotes <- FALSE
 		}
 
 		lineVar <- names(dF)[grep("^line", names(dF), ignore.case = TRUE)] 
@@ -120,11 +144,37 @@ multiYearSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sortLoHi 
 			}
 		}
 
-		lsmeansTable <- makeBLUtab(BLUE, sortHiLo = sortHiLoTrt, sortLoHi = sortLoHiTrt, ...)
-		blupTable <- makeBLUtab(BLUP, sortHiLo = sortHiLoTrt, sortLoHi = sortLoHiTrt, ...)
-		names(lsmeansTable)[names(lsmeansTable) == "effect"] <- "Line"
-		names(blupTable)[names(blupTable) == "effect"] <- "Line"
-		return(list(BLUE = lsmeansTable, BLUP = blupTable))
+		# lsmeansTable <- makeBLUtab(BLUE, sortHiLo = sortHiLoTrt, sortLoHi = sortLoHiTrt, ...)
+		# blupTable <- makeBLUtab(BLUP, sortHiLo = sortHiLoTrt, sortLoHi = sortLoHiTrt, ...)
+		# names(lsmeansTable)[names(lsmeansTable) == "effect"] <- "Line"
+		# names(blupTable)[names(blupTable) == "effect"] <- "Line"
+		# return(list(BLUE = lsmeansTable, BLUP = blupTable))
+		if (length(BLUE)){			
+				# lsmeansTable <- makeBLUtab(BLUE, sortHiLo = sortHiLo, sortLoHi = sortLoHi, addInfo = dfInfo(addEntry, by = "Line"))
+				# blupTable <- makeBLUtab(BLUP, sortHiLo = sortHiLo, sortLoHi = sortLoHi, addInfo = dfInfo(addEntry, by = "Line"))
+				lsmeansTable <- makeBLUtab(BLUE, sortHiLo = sortHiLoTrt, sortLoHi = sortLoHiTrt, ...)
+				blupTable <- makeBLUtab(BLUP, sortHiLo = sortHiLoTrt, sortLoHi = sortLoHiTrt, ...)
+				names(lsmeansTable)[names(lsmeansTable) == "effect"] <- "Line"
+				names(blupTable)[names(blupTable) == "effect"] <- "Line"
+				if(addNotes){
+					lsmeansTable <- mergeNotes(lsmeansTable, lineEntNotes)
+					blupTable <- mergeNotes(blupTable, lineEntNotes)
+				}
+				if (is.null(sortHiLoTrt) & is.null(sortLoHiTrt) & "Entry" %in% names(lsmeansTable)) {
+					# I am a little surprised the stats at bottom dont mess this up. may need to make more robust. 
+					lsmeansTable <- lsmeansTable[order(lsmeansTable[["Entry"]]),]
+					blupTable <- blupTable[order(blupTable[["Entry"]]),]
+				# use of mergeNotes should fix this need to resort afterward.
+				# } else if (!is.null(sortByTrt) & addNotes) {
+				# 	if(!is.null(sortHiLo)) neg <- -1 else neg <- 1
+				# 	lsmeansTable <- lsmeansTable[order(neg * lsmeansTable[[sortByTrt]]),]
+				# 	blupTable <- blupTable[order(neg * lsmeansTable[[sortByTrt]]),]
+				}
+				est <- list(BLUE = lsmeansTable, BLUP = blupTable)
+				return(est)
+			} else {
+				message(paste0(unique(dfj$Trial), " has no numeric phenotypes. Returning nothing"))
+			}
 	} else {
 		message(paste0(unique(dF$Trial), " is an unreplicated trial. Returning nothing"))
 		return(NULL)
