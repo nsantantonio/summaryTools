@@ -13,6 +13,7 @@ formatPrintSummary <- function(smry, infoCols = "Line", tex = TRUE, longtable = 
 	# smry = smry[!names(smry) %in% c("Entry")]; infoCols = c("Line"); tex = TRUE; digits = dgs
 	# infoCols = c("Line"); tex = FALSE; digits = 2
 	# if(tex) require(xtable)
+	if(any(grepl("\\\n", names(smry)))) names(smry) <- gsub("\\\n", " ", names(smry))
 	info <- as.matrix(smry[infoCols])
 	traits <- grep("_sig", names(smry)) - 1
 	sig <- grep("_sig", names(smry))
@@ -21,7 +22,7 @@ formatPrintSummary <- function(smry, infoCols = "Line", tex = TRUE, longtable = 
 	sigpr <- as.matrix(smry[sig])
 	sigpr[is.na(sigpr)] <- ""
 	if(is.null(digits)){
-		traitpr <- as.matrix(sapply(smry[,traits], sprintf, fmt = "%.4g"))
+		traitpr <- as.matrix(sapply(smry[,traits], sprintf, fmt = "%.3g"))
 	} else {
 		if(length(digits) == 1) {
 			digits <- rep(digits, length(traits))
