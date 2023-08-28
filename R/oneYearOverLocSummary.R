@@ -11,7 +11,7 @@
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sortLoHi = NULL, allowDupEnt = TRUE, unitSep = "|", fixed = NULL, random = NULL, printFit = FALSE, ...){
+oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sortLoHi = NULL, allowDupEnt = TRUE, unitSep = "|", fixed = NULL, random = NULL, printFit = FALSE, addNoTrial = TRUE, ...){
 # dF = testData[[k]]; traits = qtraits; addInfo = dfInfo(addEntry, by = "Line"); sortby = by; allowDupEnt = TRUE; locs = NULL; unitSep = "|"
 	if(any(table(dF$Line) > 1)){
 		
@@ -76,11 +76,14 @@ oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sort
 			# message(paste0("Running analyses for trait:", i))
 			dfi <- whichTrials(dF, i)
 			dfi <- dfi[!is.na(dfi[[i]]),] # added after last years analysis to deal with traits measured in one loc, one block. 
+			trialNames <- unique(dfi$Trial)
+			nTr <- length(trialNames)
 
 			if(nrow(dfi) > 1){
 				whichNameUnit <- which(traits == i)
 				# whichNameUnit <- grep(i, traitNames)
 				traitNameUnit <- trimws(paste(sapply(trtnu, "[[", whichNameUnit), collapse = unitSep))
+				if(addNoTrial) traitNameUnit <- paste0(traitNameUnit, " (", nTr, ")")
 				if(!is.null(sortHiLo)){
 					if(length(grep(sortHiLo, i, ignore.case = TRUE))) {
 						sortHiLoTrt <- traitNameUnit
