@@ -10,12 +10,13 @@
 #' @export
 mergeNotes <- function(BLUtab, notes){
 	# BLUtab <- lsmeansTable; notes <- lineEntNotes
+	if("Entry" %in% colnames(BLUtab)) mergeVars <- c("Entry", "Line") else mergeVars <- c("Line")
 	murow <- grep("^mean$", BLUtab$Line, ignore.case = TRUE)
 	statrows <- murow:nrow(BLUtab)
 	BLUtabStats <- BLUtab[murow:nrow(BLUtab),]
 
 	BLUtab$order <- 1:nrow(BLUtab)
-	BLUtabNotes <- merge(BLUtab[1:{murow-1},], notes, by = c("Entry", "Line"), all.x = TRUE)
+	BLUtabNotes <- merge(BLUtab[1:{murow-1},], notes, by = mergeVars, all.x = TRUE)
 	BLUtabNotes <- BLUtabNotes[order(BLUtabNotes$order), !names(BLUtabNotes) %in% "order"]
 	# BLUtabNotes <- BLUtabNotes[!names(BLUtabNotes) %in% "order"]
 
