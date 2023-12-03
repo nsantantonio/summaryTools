@@ -12,13 +12,14 @@
 #' @export
 oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, allowDupEnt = TRUE, unitSep = "|", verbose = FALSE, fixed = NULL, random = NULL, printFit = FALSE, ...){
 	# dF = testData[[k]]; traits = qtraits; addInfo = dfInfo(addEntry, by = "Line"); sortHiLo = sortby; sortLoHi = NULL; unitSep = "|"; allowDupEnt = TRUE
-	# dF = nut; traits = "DON"
-	if(!all(c("Trial", "Line", "Entry", "Block") %in% names(dF))) stop("input data.frame must have columns 'Trial', 'Line', 'Entry', 'Block'") # need to update this! got distrcted and didnt finish
+	# dF = mdxn23; traits = c("Grain Yield|bu/ac", "Test Weight|lb/bu")
+	if(!all(c("Trial", "Line", "Entry", "Block", "plot_name") %in% names(dF))) stop("input data.frame must have columns 'Trial', 'Line', 'Entry', 'Block' and 'plot_name'") # need to update this! got distrcted and didnt finish
 	traits <- gsub("\\s*\\(.*|\\s*\n|\\|.*", "", traits)
 	# trtCols <- grep(paste(traits, collapse = "|"), names(dF))
 	trtCols <- sapply(traits, function(x) grep(x, names(dF)))
 	trtCols <- unlist(trtCols[sapply(trtCols, length) > 0])
-	
+	if(is.null(trtCols)) stop("traits provided are not in the data.frame!")
+
 	numtrait <- sapply(dF[trtCols], is.numeric)
 	charTrtCols <- trtCols[!numtrait]
 	trtCols <- trtCols[numtrait]

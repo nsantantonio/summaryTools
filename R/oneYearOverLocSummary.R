@@ -13,11 +13,13 @@
 #' @export
 oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sortLoHi = NULL, allowDupEnt = TRUE, unitSep = "|", fixed = NULL, random = NULL, printFit = FALSE, addNoTrial = TRUE, ...){
 # dF = testData[[k]]; traits = qtraits; addInfo = dfInfo(addEntry, by = "Line"); sortby = by; allowDupEnt = TRUE; locs = NULL; unitSep = "|"
+	if(!all(c("Trial", "Line", "Entry", "Block", "plot_name") %in% names(dF))) stop("input data.frame must have columns 'Trial', 'Line', 'Entry', 'Block' and 'plot_name'") # need to update this! got distrcted and didnt finish
 	if(any(table(dF$Line) > 1)){
 		
 		traits <- gsub("\\s*\\(.*|\\s*\n|\\|.*", "", traits)
 		trtCols <- sapply(traits, function(x) grep(x, names(dF)))
 		trtCols <- unlist(trtCols[sapply(trtCols, length) > 0])
+		if(is.null(trtCols)) stop("traits provided are not in the data.frame!")
 			
 		numtrait <- sapply(dF[trtCols], is.numeric)
 		charTrtCols <- trtCols[!numtrait]
