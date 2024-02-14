@@ -6,7 +6,7 @@
 #' @param aln character of length 1, indicating alignment, l, r or c. 
 #' @param pad extra pad to be added
 #' @param digits vector of length ncol(tab) indicating the number of digits. If columns are not nueric, you still have to add some value for each column, which will be ignored. 
-#' @param ignore.rownames should rownames of the table be ignored? default is TRUE
+#' @param include.rownames should rownames of the table be ignored? default is TRUE
 #' @param formatColNames will reformat column names of the type 'Trait|unit (#trials)' to multiple lines, 'Trait \\ unit \\ #trials' for better printing
 #' @param statsLine should a line be printed before mean, CV, LSD?
 #' @param caption latex latex caption. If you complicated you might want to skip this and edit the output tex table 
