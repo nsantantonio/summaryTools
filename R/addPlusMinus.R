@@ -9,6 +9,7 @@
 #' @examples # none
 #' @export
 addPlusMinus <- function(smry, traits = NULL){
+	# smry = usnMeans; traits = traits
 	if(is.list(smry) & !is.data.frame(smry)) smry <- smry$BLUE
 	rownames(smry) <- smry$Line
 
@@ -25,7 +26,8 @@ addPlusMinus <- function(smry, traits = NULL){
 		traits <- colnames(stat[sapply(stat, function(x) is.numeric(x) & all(!is.na(x)))])
 	}
 	trtCols <- NULL
-	for(i in traits) trtCols[i] <- which(i == names(BLUE))
+	# for(i in traits) trtCols[i] <- which(i == names(BLUE))
+	for(i in traits) trtCols[i] <- grep(paste0("^", gsub("\\|.*", "", i)), names(BLUE))
 	firstTrt <- min(trtCols)
 	
 	BLUEinfo <- BLUE[!names(BLUE) %in% traits]
@@ -35,15 +37,15 @@ addPlusMinus <- function(smry, traits = NULL){
 	statL <- list()
 	counter <- 1
 	for(i in traits){
-		bi <- data.frame(BLUE[i], check.names = FALSE)
+		bi <- data.frame(BLUE[trtCols[i]], check.names = FALSE)
 		bi[[paste0(i, "_sig")]] <- ""
-		if(!is.na(stat["LSD", i])){
-			bi[[paste0(i, "_sig")]][BLUE[[i]] > stat["mean", i] + stat["LSD", i]] <- "+"
-			bi[[paste0(i, "_sig")]][BLUE[[i]] < stat["mean", i] - stat["LSD", i]] <- "-"
+		if(!is.na(stat["LSD", trtCols[i]])){
+			bi[[paste0(i, "_sig")]][BLUE[[trtCols[i]]] > stat["mean", trtCols[i]] + stat["LSD", trtCols[i]]] <- "+"
+			bi[[paste0(i, "_sig")]][BLUE[[trtCols[i]]] < stat["mean", trtCols[i]] - stat["LSD", trtCols[i]]] <- "-"
 		}
 		trtL[[counter]] <- bi
 
-		si <- data.frame(stat[i], check.names = FALSE)
+		si <- data.frame(stat[trtCols[i]], check.names = FALSE)
 		si[[paste0(i, "_sig")]] <- ""
 		statL[[counter]] <- si
 		counter <- counter + 1
