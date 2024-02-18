@@ -2,20 +2,24 @@
 % Please edit documentation in R/addOntology.R
 \name{addOntology}
 \alias{addOntology}
-\title{cleanTraitNames function}
+\title{addOntology function}
 \usage{
-addOntology(testData, ontology)
+addOntology(testData, ontology, exactMatch = FALSE, returnDF = FALSE)
 }
 \arguments{
-\item{testData}{[value]}
+\item{testData}{data.frame of test data with traits in columns.}
 
-\item{ontology}{[value]. Default is TRUE}
+\item{ontology}{data.frame with two columns, first must be the trait pattern to match and the second is the ontology}
+
+\item{exactMatch}{logical. match the trait pattern exactly. Default is FALSE}
+
+\item{returnDF}{logical. should a dataframe be returned? Default is FALSE}
 }
 \value{
 [value]
 }
 \description{
-function to (do something)
+function to change trait names to add ontology numbers.
 }
 \details{
 [fill in details here]
