@@ -30,8 +30,8 @@ addPlusMinus <- function(smry, traits = NULL){
 	for(i in traits) trtCols[i] <- grep(paste0("^", gsub("\\|.*", "", i)), names(BLUE))
 	firstTrt <- min(trtCols)
 	
-	BLUEinfo <- BLUE[!names(BLUE) %in% traits]
-	statinfo <- stat[!names(stat) %in% traits]
+	BLUEinfo <- BLUE[!gsub("\\|.*", "", names(BLUE)) %in% gsub("\\|.*", "", traits)]
+	statinfo <- stat[!gsub("\\|.*", "", names(stat)) %in% gsub("\\|.*", "", traits)]
 
 	trtL <- list()
 	statL <- list()
@@ -52,5 +52,5 @@ addPlusMinus <- function(smry, traits = NULL){
 	}
 	BLUEpm <- data.frame(BLUEinfo, do.call(cbind,trtL), check.names = FALSE)
 	statpm <- data.frame(statinfo, do.call(cbind,statL), check.names = FALSE)
-	rbind(BLUEpm, statpm)
+	return(rbind(BLUEpm, statpm))
 }
