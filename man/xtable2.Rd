@@ -17,6 +17,7 @@ xtable2(
   formatColNames = TRUE,
   statsLine = TRUE,
   specialChars = c("#"),
+  naReplace = "",
   ...
 )
 }
@@ -35,11 +36,13 @@ xtable2(
 
 \item{size}{latex textsize. do not add slashes before, they will be appended automatically.}
 
+\item{include.rownames}{should rownames of the table be ignored? default is TRUE}
+
 \item{formatColNames}{will reformat column names of the type 'Trait|unit (#trials)' to multiple lines, 'Trait \\ unit \\ #trials' for better printing}
 
 \item{statsLine}{should a line be printed before mean, CV, LSD?}
 
-\item{ignore.rownames}{should rownames of the table be ignored? default is TRUE}
+\item{naReplace}{character. What character should replace missing table cells. Default is "". If NA is desired in the output, set naReplace = NULL}
 }
 \value{
 [value]
