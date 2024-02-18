@@ -74,6 +74,7 @@ awnsToScore <- function(awns){
 	awnScore[awns == "A"] <- 3
 	awnScore[awns == "TA"] <- 2
 	awnScore[awns == "AL"] <- 1
+	awnScore[awns %in% c("M", "Mix", "Mixed", "S", "Seg", "m", "mix", "mixed", "s", "seg")] <- 4
 	return(awnScore)
 }
 
