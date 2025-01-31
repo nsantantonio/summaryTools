@@ -9,7 +9,7 @@
 #' @examples # none
 #' @export
 addPlusMinus <- function(smry, traits = NULL){
-	# smry = usnMeans; traits = traits
+	# smry = metMeans; traits = multiEnvTrait
 	if(is.list(smry) & !is.data.frame(smry)) smry <- smry$BLUE
 	rownames(smry) <- smry$Line
 
@@ -27,7 +27,8 @@ addPlusMinus <- function(smry, traits = NULL){
 	}
 	trtCols <- NULL
 	# for(i in traits) trtCols[i] <- which(i == names(BLUE))
-	for(i in traits) trtCols[i] <- grep(paste0("^", gsub("\\|.*", "", i)), names(BLUE))
+	# for(i in traits) trtCols[i] <- grep(paste0("^", gsub("\\|.*", "", i)), names(BLUE))
+	for(i in traits) trtCols[i] <- grep(paste0("^", gsub("\\|.*", "", i), "$"), gsub("\\|.*", "", names(BLUE)))
 	firstTrt <- min(trtCols)
 	
 	BLUEinfo <- BLUE[!gsub("\\|.*", "", names(BLUE)) %in% gsub("\\|.*", "", traits)]
