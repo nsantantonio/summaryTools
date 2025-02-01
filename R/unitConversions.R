@@ -69,7 +69,12 @@ gltolbbu <- function(gl){
 #' @examples # none
 #' @export
 awnsToScore <- function(awns){
-	if(!all(awns[!is.na(awns)] %in% c("A", "TA", "AL", "M", "Mix", "Mixed", "S", "Seg", "m", "mix", "mixed", "s", "seg" ))) stop("Only valid values are 'A' for Awns, 'TA' for tip-awned, and 'AL' for awnless")
+	if(!all(awns[!is.na(awns)] %in% c("1", "2", "3", "4", "A", "TA", "AL", "M", "Mix", "Mixed", "S", "Seg", "m", "mix", "mixed", "s", "seg" ))) {
+		warning("Only valid values are 'A' for Awns, 'TA' for tip-awned, and 'AL' for awnless")
+		message("The following values are not allowed, being set to NA")
+		print(awns[!is.na(awns)][!awns[!is.na(awns)] %in% c("1", "2", "3", "4", "A", "TA", "AL", "M", "Mix", "Mixed", "S", "Seg", "m", "mix", "mixed", "s", "seg" )])
+		awns[!is.na(awns)][!awns[!is.na(awns)] %in% c("1", "2", "3", "4", "A", "TA", "AL", "M", "Mix", "Mixed", "S", "Seg", "m", "mix", "mixed", "s", "seg" )] <- NA
+	}
 	awnScore <- rep(NA, length(awns))
 	awnScore[awns == "A"] <- 3
 	awnScore[awns == "TA"] <- 2
