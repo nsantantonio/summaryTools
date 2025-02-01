@@ -4,13 +4,8 @@
 \alias{consensusYld}
 \title{consensusYld function}
 \usage{
-consensusYld(
-  sclhm,
-  defaultScale = TRUE,
-  yldRange = c(500, 6000),
-  barley = FALSE,
-  ...
-)
+consensusYld(sclhm, defaultScale = TRUE, yldRange = c(500, 6000),
+  barley = FALSE, ...)
 }
 \arguments{
 \item{sclhm}{data.frame with 'netWieght' from a scale, and 'netWeight_HarvM' from the harvest master.}

@@ -4,7 +4,8 @@
 \alias{correctWeight}
 \title{correctWeight function}
 \usage{
-correctWeight(weight, moisture, stdMoisture = 13.5, barley = FALSE, ...)
+correctWeight(weight, moisture, stdMoisture = 13.5, barley = FALSE,
+  ...)
 }
 \arguments{
 \item{weight}{[value]}

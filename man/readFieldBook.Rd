@@ -4,14 +4,8 @@
 \alias{readFieldBook}
 \title{readFieldBook function}
 \usage{
-readFieldBook(
-  path,
-  year,
-  testName = NULL,
-  sheets = NULL,
-  colOrder = NULL,
-  scoreTraits = NULL
-)
+readFieldBook(path, year, testName = NULL, sheets = NULL,
+  colOrder = NULL, scoreTraits = NULL)
 }
 \arguments{
 \item{path}{[value]}

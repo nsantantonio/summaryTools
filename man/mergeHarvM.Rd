@@ -4,16 +4,8 @@
 \alias{mergeHarvM}
 \title{mergeHarvM function}
 \usage{
-mergeHarvM(
-  hmL,
-  sclL,
-  djL,
-  consensus = FALSE,
-  keepRangeRow = TRUE,
-  keepNotes = TRUE,
-  rmPlotPattern = NULL,
-  ...
-)
+mergeHarvM(hmL, sclL, djL, consensus = FALSE, keepRangeRow = TRUE,
+  keepNotes = TRUE, rmPlotPattern = NULL, ...)
 }
 \arguments{
 \item{hmL}{[value]}
