@@ -15,7 +15,7 @@ readRegionalExcel(path, nlineHeader = 2, ...)
 [value]
 }
 \description{
-function to read Wade's crazy excel table summaries.
+function to read regional excel summaries. These typically have
 }
 \details{
 [fill in details here]

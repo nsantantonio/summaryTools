@@ -1,6 +1,6 @@
 #' readRegionalExcel function
 #'
-#' function to read Wade's crazy excel table summaries. 
+#' function to read regional excel summaries. These typically have  
 #'
 #' @param path file path
 #' @param nlineHeader number of lines in the header
@@ -10,6 +10,8 @@
 #' @export
 readRegionalExcel <- function(path, nlineHeader = 2, ...){
 	# nlineHeader <- 2; path = "/home/nsant/Dropbox/releases2023/analysis/data/GAWN21MEANS071421.xlsx"
+	# tm <- as.data.frame(read_excel(path, skip = nlineHeader, col_names = FALSE,sheet = "summary", na = c("", "-"))); tmh <- as.data.frame(read_excel(path, n_max = nlineHeader,sheet = "summary", na = c("", "-")))
+	# nlineHeader <- 2; path = "/home/nsant/Dropbox/VT22selections/collabResults/Preliminary_UniformSouthern_Aug3022.xlsx"
 	# tm <- as.data.frame(read_excel(path, skip = nlineHeader, col_names = FALSE,sheet = "summary", na = c("", "-"))); tmh <- as.data.frame(read_excel(path, n_max = nlineHeader,sheet = "summary", na = c("", "-")))
 	require(readxl)
 	tm <- as.data.frame(read_excel(path, skip = nlineHeader, col_names = FALSE, ...))
