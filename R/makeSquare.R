@@ -16,6 +16,7 @@
 makeSquare <- function(dF, dvars = NULL, range = "range", pass = "pass", dummy = "dummy", imputeFactors = TRUE, by = NULL){
 #	dF = yldPreObs; range = "range"; pass = "pass"; by = "blockName"; dvars = c("Line"); dummy = "dummy"
 	# dF <- dF[dF[[by]] == "jinkinsCenterV", ];
+	if(class(dF$Line) != "factor") {stop("dF column 'Line' must be a factor!")}
 	if(any(!c(range, pass) %in% names(dF))) stop("columns 'range' and 'pass' must be in dF!")
 	if(is.factor(dF[[range]])) {
 		rangeLevs <- levels(dF[[range]])
