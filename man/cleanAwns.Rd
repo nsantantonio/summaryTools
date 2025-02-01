@@ -2,7 +2,7 @@
 % Please edit documentation in R/cleanAwns.R
 \name{cleanAwns}
 \alias{cleanAwns}
-\title{selectAwn function}
+\title{cleanAwns function}
 \usage{
 cleanAwns(x)
 }
