@@ -27,7 +27,8 @@ recodeLoc <- function(loc, locCode = NULL, locPattern = NULL){
 					 "CENIL", 
 					 "HIHMO", 
 					 "CHMIL", 
-					 "URBIL")
+					 "URBIL",
+					 "FLOSC")
 	}
 	if(is.null(locPattern)){
 		locPattern <- c("blacksburg$", 
@@ -46,7 +47,8 @@ recodeLoc <- function(loc, locCode = NULL, locPattern = NULL){
 						"Centralia$", 
 						"High Hill$",
 						"Champagne$", 
-						"Urbana$")
+						"Urbana$", 
+						"Florence$")
 	}
 	# if(length(locCode) != length(locPattern)) stop("locCode must be same length as locPattern!")
 	for(i in 1:length(locCode)){
