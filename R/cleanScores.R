@@ -9,7 +9,7 @@
 #' @examples # none
 #' @export
 cleanScores <- function(fb, scoreTraits = NULL, zeroThreshold = 0.5){
-	# fb <- fb[[8]]
+	# fb <- fb[[5]]; zeroThreshold = 0.5
 	isScore <- function(x){
 		if(is.numeric(x)){
 			s <- x >= 0 & x <= 9
@@ -45,7 +45,7 @@ cleanScores <- function(fb, scoreTraits = NULL, zeroThreshold = 0.5){
 
 	# I NEED TO FIX THIS!!!! setting all NA to 0s, whern some reps not scored. Fixed aug3 2023
 	if(length(scoreTraits)){
-		scoreCols <- grep(paste(scoreTraits, collapse = "|"), names(fb))
+		scoreCols <- grep(paste(gsub("\\|.*", "", scoreTraits), collapse = "|"), names(fb))
 		percMiss <- sapply(fb[scoreCols], function(x) sum(is.na(x)) / length(x))
 		# needZeros <- names(fb)[scoreCols][percMiss > 0 & percMiss < 1]
 		needZeros <- names(fb)[scoreCols][percMiss >= zeroThreshold & percMiss < 1]
