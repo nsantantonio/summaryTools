@@ -1,22 +1,28 @@
 #' oneYearOneLocSummary function
 #'
-#' function to (do something)
+#' function to analyze trial data and return a trial summary with lines treated as fixed (BLUE) and random (BLUP). LSD and CV is returned with the BLUEs and a broad-sense heritability and the error standard deviation are returned with the BLUPs.
 #'
-#' @param dF [value]
-#' @param traits [value]
-#' @param sortby [value]. Default is NULL
-#' @param allowDupEnt [value]. Default is TRUE
+#' @param dF data.frame of trial data. Variables "Trial", "Line", "Entry", "Block", "plot_name" must be included. plot_name is must be of the form Test_Year_Location.
+#' @param traits character vector of traits to analyze.  
+#' @param sortHiLo Trait by which to sort summary high to low. Leave NULL to sort by entry. Default is NULL
+#' @param sortLoHi Trait by which to sort summary low to high. Leave NULL to sort by entry. Default is NULL
+#' @param allowDupEnt logical. Should duplicated entries be allowed? Useful for the same line from different seed sources. default is TRUE
+#' @param unitSep character. separator for units. Typically this is either a space, parenthesis, or in line with T3, a pipe. default is "|"
+#' @param verbose logical. Default is TRUE
+#' @param fixed [value]. Default is NULL
+#' @param random [value]. Default is NULL
+#' @param printFit logical. Should the model fit be printed to stdout? Default is FALSE
 #' @return [value]
 #' @details [fill in details here]
 #' @examples # none
 #' @export
 oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, allowDupEnt = TRUE, unitSep = "|", verbose = FALSE, fixed = NULL, random = NULL, printFit = FALSE, ...){
-	# dF = testData[[k]]; traits = qtraits; addInfo = dfInfo(addEntry, by = "Line"); sortHiLo = sortby; sortLoHi = NULL; unitSep = "|"; allowDupEnt = TRUE
-	# dF = mdxn23; traits = c("Grain Yield|bu/ac", "Test Weight|lb/bu")
+	# dF = sil[vars]; traits = qtraits; addInfo = dfInfo(addEntry, by = "Line"); sortHiLo = sortby; sortLoHi = NULL; unitSep = "|"; allowDupEnt = TRUE
+	# dF = sil[vars]; traits = qtraits
 	if(!all(c("Trial", "Line", "Entry", "Block", "plot_name") %in% names(dF))) stop("input data.frame must have columns 'Trial', 'Line', 'Entry', 'Block' and 'plot_name'") # need to update this! got distrcted and didnt finish
 	traits <- gsub("\\s*\\(.*|\\s*\n|\\|.*", "", traits)
 	# trtCols <- grep(paste(traits, collapse = "|"), names(dF))
-	trtCols <- sapply(traits, function(x) grep(x, names(dF)))
+	trtCols <- sapply(traits, function(x) grep(paste0("^", x), names(dF)))
 	trtCols <- unlist(trtCols[sapply(trtCols, length) > 0])
 	if(is.null(trtCols)) stop("traits provided are not in the data.frame!")
 
@@ -39,7 +45,7 @@ oneYearOneLocSummary <- function(dF, traits, sortHiLo = NULL, sortLoHi = NULL, a
 	
 	estL <- list()
 	for(j in trials){
-		# j <- trials[2]
+		# j <- trials[3]
 		dfj <- dF[dF$Trial == j,]
 
 		lineVar <- names(dfj)[grep("^line", names(dfj), ignore.case = TRUE)] 

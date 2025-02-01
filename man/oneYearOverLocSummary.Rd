@@ -4,20 +4,9 @@
 \alias{oneYearOverLocSummary}
 \title{oneYearOverLocSummary function}
 \usage{
-oneYearOverLocSummary(
-  dF,
-  traits,
-  locs = NULL,
-  sortHiLo = NULL,
-  sortLoHi = NULL,
-  allowDupEnt = TRUE,
-  unitSep = "|",
-  fixed = NULL,
-  random = NULL,
-  printFit = FALSE,
-  addNoTrial = TRUE,
-  ...
-)
+oneYearOverLocSummary(dF, traits, locs = NULL, sortHiLo = NULL,
+  sortLoHi = NULL, allowDupEnt = TRUE, unitSep = "|", fixed = NULL,
+  random = NULL, printFit = FALSE, addNoTrial = TRUE, ...)
 }
 \arguments{
 \item{dF}{[value]}
@@ -26,9 +15,23 @@ oneYearOverLocSummary(
 
 \item{locs}{[value]. Default is NULL}
 
-\item{allowDupEnt}{[value]. Default is TRUE}
+\item{sortHiLo}{Trait by which to sort summary high to low. Leave NULL to sort by entry. Default is NULL}
 
-\item{sortby}{[value]. Default is NULL}
+\item{sortLoHi}{Trait by which to sort summary low to high. Leave NULL to sort by entry. Default is NULL}
+
+\item{allowDupEnt}{logical. Should duplicated entries be allowed? Useful for the same line from different seed sources. default is TRUE}
+
+\item{unitSep}{character. separator for units. Typically this is either a space, parenthesis, or in line with T3, a pipe. default is "|"}
+
+\item{fixed}{[value]. Default is NULL}
+
+\item{random}{[value]. Default is NULL}
+
+\item{printFit}{logical. Should the model fit be printed to stdout? Default is FALSE}
+
+\item{addNoTrial}{logical. Should the number of environments be added to the triat name in the summary? Useful for printing summaries, especially when using formatPrintSummary(). Default is TRUE}
+
+\item{verbose}{logical. Default is TRUE}
 }
 \value{
 [value]

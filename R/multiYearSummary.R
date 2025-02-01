@@ -30,7 +30,7 @@ multiYearSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sortLoHi 
 		if(!all(c("Trial", "Line", "Block") %in% names(dF))) stop("input data.frame must have columns 'Trial', 'Line', 'Block'") # need to update this! got distrcted and didnt finish
 		traits <- gsub("\\s*\\(.*|\\s*\n|\\|.*", "", traits)
 		# trtCols <- grep(paste(traits, collapse = "|"), names(dF))
-		trtCols <- sapply(traits, function(x) grep(x, names(dF)))
+		trtCols <- sapply(traits, function(x) grep(paste0("^", x), names(dF)))
 		trtCols <- unlist(trtCols[sapply(trtCols, length) > 0])
 		
 		numtrait <- sapply(dF[trtCols], is.numeric)
@@ -173,7 +173,7 @@ multiYearSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sortLoHi 
 				est <- list(BLUE = lsmeansTable, BLUP = blupTable)
 				return(est)
 			} else {
-				message(paste0(unique(dfj$Trial), " has no numeric phenotypes. Returning nothing"))
+				message(paste0(unique(dF$Trial), " has no numeric phenotypes. Returning nothing"))
 			}
 	} else {
 		message(paste0(unique(dF$Trial), " is an unreplicated trial. Returning nothing"))

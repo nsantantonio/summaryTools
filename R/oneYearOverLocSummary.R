@@ -5,8 +5,15 @@
 #' @param dF [value]
 #' @param traits [value]
 #' @param locs [value]. Default is NULL
-#' @param sortby [value]. Default is NULL
-#' @param allowDupEnt [value]. Default is TRUE
+#' @param sortHiLo Trait by which to sort summary high to low. Leave NULL to sort by entry. Default is NULL
+#' @param sortLoHi Trait by which to sort summary low to high. Leave NULL to sort by entry. Default is NULL
+#' @param allowDupEnt logical. Should duplicated entries be allowed? Useful for the same line from different seed sources. default is TRUE
+#' @param unitSep character. separator for units. Typically this is either a space, parenthesis, or in line with T3, a pipe. default is "|"
+#' @param verbose logical. Default is TRUE
+#' @param fixed [value]. Default is NULL
+#' @param random [value]. Default is NULL
+#' @param printFit logical. Should the model fit be printed to stdout? Default is FALSE
+#' @param addNoTrial logical. Should the number of environments be added to the triat name in the summary? Useful for printing summaries, especially when using formatPrintSummary(). Default is TRUE
 #' @return [value]
 #' @details [fill in details here]
 #' @examples # none
@@ -17,7 +24,7 @@ oneYearOverLocSummary <- function(dF, traits, locs = NULL, sortHiLo = NULL, sort
 	if(any(table(dF$Line) > 1)){
 		
 		traits <- gsub("\\s*\\(.*|\\s*\n|\\|.*", "", traits)
-		trtCols <- sapply(traits, function(x) grep(x, names(dF)))
+		trtCols <- sapply(traits, function(x) grep(paste0("^", x), names(dF)))
 		trtCols <- unlist(trtCols[sapply(trtCols, length) > 0])
 		if(is.null(trtCols)) stop("traits provided are not in the data.frame!")
 			
