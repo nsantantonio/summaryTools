@@ -14,7 +14,7 @@
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-longxtable <- function(tab, aln = NULL, pad = 0, digits = 2, caption = NULL, label = NULL, size = "footnotesize", footNotes = NULL, include.rownames = TRUE, formatColNames = TRUE, statsLine = TRUE, specialChars = "#", fitPageWidth = TRUE, ...){
+longxtable <- function(tab, aln = NULL, pad = 0, digits = 2, caption = NULL, label = NULL, size = "footnotesize", footNotes = NULL, include.rownames = TRUE, formatColNames = TRUE, statsLine = TRUE, specialChars = c("#", "_"), fitPageWidth = TRUE, ...){
 	# if numeric, shoudl round to something
 	# tab <- prmat; pad = 0; digits = 2; aln = NULL; include.rownames = FALSE; formatColNames = TRUE; statsLine = TRUE; footNotes = tabNotes; caption = "this is a caption"; label = "lab"; size = "footnotesize"; specialChars = "#"; fitPageWidth = TRUE; 
 	size <- paste0("\\", size)
