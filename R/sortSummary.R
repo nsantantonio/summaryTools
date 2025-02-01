@@ -9,7 +9,7 @@
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-sortSummary <- function(smry, trait, decreasing = TRUE){
+sortSummary <- function(smry, trait, decreasing = TRUE, ...){
 	N <- grep("mean", smry$Line, ignore.case = TRUE) - 1
 	dat <- smry[1:N,]
 	stat <- smry[{N+1}:nrow(smry),]

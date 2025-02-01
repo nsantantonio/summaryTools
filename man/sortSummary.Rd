@@ -4,7 +4,7 @@
 \alias{sortSummary}
 \title{sortSummary function}
 \usage{
-sortSummary(smry, trait, decreasing = TRUE)
+sortSummary(smry, trait, decreasing = TRUE, ...)
 }
 \arguments{
 \item{smry}{summary output from oneYearOneLocSummary, oneYearOverLocSummary, or multiYearSummary}
