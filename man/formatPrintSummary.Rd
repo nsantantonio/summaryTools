@@ -4,21 +4,26 @@
 \alias{formatPrintSummary}
 \title{formatPrintSummary function}
 \usage{
-formatPrintSummary(
-  smry,
-  infoCols = "Line",
-  tex = TRUE,
-  longtable = FALSE,
-  digits = NULL,
-  ...
-)
+formatPrintSummary(smry, infoCols = "Line", traits = NULL,
+  tex = TRUE, longtable = FALSE, digits = NULL, type = "BLUE",
+  con = NULL, ...)
 }
 \arguments{
 \item{smry}{summary output from oneYearOneLocSummary, oneYearOverLocSummary, or multiYearSummary}
 
 \item{infoCols}{list of col names to be included in printed list as is}
 
+\item{traits}{should a latex table be printed to stdout?}
+
 \item{tex}{should a latex table be printed to stdout?}
+
+\item{longtable}{should a longtable be produced (multi page table)}
+
+\item{digits}{integer. vector of number of digits per traits, length must equal length(traits)}
+
+\item{type}{type of summary to be written. valid arguments are 'BLUE' or 'BLUP'}
+
+\item{con}{path to file connection to write lines to}
 }
 \value{
 [value]
