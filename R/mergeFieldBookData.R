@@ -14,7 +14,7 @@
 #' @export
 mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialDesigns = NULL, trialPassRange = NULL, sqft = 45, testName = NULL, year = NULL, inclPed = TRUE, ...){
 	# fb = fbL[[i]]; dj = scldj[["dj"]][[i]]; scl = scldj[["scl"]][[i]]; paperfb = pfbL[[i]]; trialDesigns = trials[grep(paste0("^", i), names(trials))]; trialPassRange = allFields; sqft = 45; testName = i; year = yr; barley = isBarley; inclPed = TRUE
-	# fb = fbL[[i]]; dj = scldj[["dj"]][[i]]; scl = scldj[["scl"]][[i]]; paperfb = NULL; trialDesigns = trials[grep(paste0("^", i), names(trials))]; trialPassRange = allFields; sqft = 45; testName = i; year = yr; barley = isBarley; inclPed = TRUE
+	# fb = fbL[[i]]; dj = scldj[["dj"]][[i]]; scl = scldj[["scl"]][[i]]; paperfb = NULL; trialDesigns = trials[grep(paste0("^", i), names(trials))]; trialPassRange = allFields; sqft = 45; testName = i; year = year; barley = isBarley; inclPed = TRUE
 	if (is.null(testName)) {
 		if (!is.null(fb)) testName <- gsub("_.*", "", fb[[1]][["plot_name"]][[1]]) else if (!is.null(scl)) testName <- gsub("_.*", "", scl[[1]][["plot_name"]][[1]]) else testName <- "NoNameTest" 
 		message(paste0("No testName provided. Using first record to obtain testName:\n", testName))
@@ -25,7 +25,14 @@ mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialD
 	}
 
 	if (!is.null(fb)){
-		names(fb) <- paste0(testName, "_", year, "_", recodeLoc(recodeLoc(names(fb)),locPattern = locCode))
+		# names(fb) <- paste0(testName, "_", year, "_", recodeLoc(recodeLoc(names(fb)), locPattern = locCode))
+		malNamed <- !grepl(".*_[0-9]{4}_[A-z]*", names(fb))
+		if(any(malNamed)) {
+			message("The following trial names are malformed in fb data. Should be of the form <Test>_<Year>_<locCode>\n provide an argument locCode and locPattern to the function call to lookup and replace Trial names")
+			print(names(fb)[malNamed])
+			# names(fb)[malNamed] <- paste0(testName, "_", year, "_", recodeLoc(names(fb)[[malNamed]], ...))
+			names(fb)[malNamed] <- paste0(testName, "_", year, "_", recodeLoc(names(fb)[[malNamed]], ...))
+		}
 		fb <- lapply(fb, formatFieldBook)
 		fb <- lapply(fb, cleanScores)
 		trialNames <- names(fb)
@@ -49,9 +56,21 @@ mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialD
 	}
 
 	yldL <- list()
-	if (!is.null(scl) & !is.null(dj)){		
-		names(scl) <- paste0(testName, "_", year, "_", recodeLoc(recodeLoc(names(scl)), locPattern = locCode)) # will accept either BLAVA or blacksburg
-		names(dj) <- paste0(testName, "_", year, "_", recodeLoc(recodeLoc(names(dj)), locPattern = locCode)) # will accept either BLAVA or blacksburg
+	if (!is.null(scl) & !is.null(dj)){	
+		malNamedScl <- !grepl(".*_[0-9]{4}_[A-z]*", names(scl))
+		if(any(malNamedScl)) {
+			message("The following trial names are malformed in the scl data. Should be of the form <Test>_<Year>_<locCode>\n provide an argument locCode and locPattern to the function call to lookup and replace Trial names")
+			print(names(scl)[malNamed])
+			names(scl)[malNamed] <- paste0(testName, "_", year, "_", recodeLoc(names(scl)[[malNamed]], ...))
+		}
+		malNamedDj <- !grepl(".*_[0-9]{4}_[A-z]*", names(scl))
+		if(any(malNamedDj)) {
+			message("The following trial names are malformed in teh DJ data. Should be of the form <Test>_<Year>_<locCode>\n provide an argument locCode and locPattern to the function call to lookup and replace Trial names")
+			print(names(dj)[malNamed])
+			names(dj)[malNamed] <- paste0(testName, "_", year, "_", recodeLoc(names(dj)[[malNamed]], ...))
+		}
+		# names(scl) <- paste0(testName, "_", year, "_", recodeLoc(recodeLoc(names(scl)), locPattern = locCode)) # will accept either BLAVA or blacksburg
+		# names(dj) <- paste0(testName, "_", year, "_", recodeLoc(recodeLoc(names(dj)), locPattern = locCode)) # will accept either BLAVA or blacksburg
 		if (length(names(scl)) != length(names(dj))) {
 			message("Scale and Dj lists are different lengths (different no. of trials?)")
 			scl <- scl[names(scl) %in% names(dj)]
@@ -168,6 +187,7 @@ mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialD
 		alldata <- data.frame()
 	}
 
+
 	if (tdExists){
 		alldata <- alldata[!names(alldata) %in% c("Entry", "Line", "Plot", "Block", "Pedigree")]
 		mcols <- intersect(names(td), names(alldata))
@@ -192,6 +212,9 @@ mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialD
 		}
 	}
 
+	# dim(alldata)
+	# dim(td)
+
 	if (!is.null(trialPassRange) & tdExists){
 		if(!all(c("blockName", "plot_name", "pass", "range") %in% names(trialPassRange))) stop("trialPassRange must contain the variables 'blockName', 'plot_name', 'pass' and 'range'.")
 		alldataNames <- names(alldata)[!names(alldata) %in% "blockName"]
@@ -199,11 +222,22 @@ mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialD
 		# this is needed for when trials are split across fieldBlocks (need for blockname) or when trial does not have a trial in a fieldblock (eg. scab nursery fieldblocks have trays, not each trial)
 		for(i in unique(alldata$Trial)){
 			alldatai <- alldata[alldata$Trial %in% i, ]
+			if(!is.null(alldatai)){
+				if(all(is.na(alldatai$blockName))){alldatai <- alldatai[!names(alldatai) %in% "blockName"]}
+			}
+			trialPassRangei <- trialPassRange[trialPassRange$Trial %in% i, ]
+			# dim(alldatai
+			# dim(trialPassRangei)
 			if(i %in% trialPassRange$Trial & !is.null(alldatai$blockName)){
-				alldatai <- merge(alldatai, trialPassRange[c("blockName", "plot_name", "pass", "range")], by = c("blockName", "plot_name"), all.x = TRUE)
+				alldatai <- merge(alldatai, trialPassRangei[c("blockName", "plot_name", "pass", "range")], by = c("blockName", "plot_name"), all.x = TRUE)
 			} else {
-				alldatai <- merge(alldatai, trialPassRange[c("plot_name", "pass", "range")], by = c("plot_name"), all.x = TRUE)
-				alldatai$blockName <- NA # could use trial name?
+				if(nrow(trialPassRangei) > 0){
+					alldatai <- merge(alldatai, trialPassRange[c("blockName", "plot_name", "pass", "range")], by = c("plot_name"), all.x = TRUE)
+				} else {
+					alldatai$blockName <- NA 
+					alldatai$pass <- NA 
+					alldatai$range <- NA 
+				}
 			}
 			# alldatai <- alldatai[order(alldatai$plot_name), ]
 			alldatai <- alldatai[order(alldatai$Plot), ] # all trials should have a Plot col, right?
@@ -235,7 +269,8 @@ mergeFieldBookData <- function(fb, dj = NULL, scl = NULL, paperfb = NULL, trialD
 	alldata <- alldata[order(alldata$Trial, alldata[[grep("^plot$", names(alldata), ignore.case = TRUE)]]), ]
 	if(any(duplicated(alldata$plot_name))){
 		message(paste0("The following plots have duplicate records! Check that the bag wasnt weighed twice, etc."))
-		alldata[alldata$plot_name %in% alldata$plot_name[duplicated(alldata$plot_name)],]
+		# print(alldata[alldata$plot_name %in% alldata$plot_name[duplicated(alldata$plot_name)], ])
+		print(paste0(duplicated(alldata$plot_name), " plots have duplicate records! Definitely a merge error you need to fix!"))
 	}
 
 	# head(alldata)
