@@ -20,6 +20,7 @@ dataToFb <- function(dF, traits, plot_name = "plot_name", timestamp = NULL, pers
 	for(i in traits){
 		dFi <- dFt[c("plot_name", i)]
 		names(dFi)[2] <- "value"
+		dFi[[2]] <- as.character(dFi[[2]]) # converts numeric, POSIX, etc to character so subsequent traits do not inherit previous traits class, eg. first trait is POSIX, second is numeric will results in second trait being POSIX
 		dFi[["trait"]] <- i
 		dFL[[i]] <- dFi[c("plot_name", "trait", "value")]
 	}
