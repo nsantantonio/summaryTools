@@ -12,9 +12,9 @@
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-readFieldBookDB <- function(path, ontology = NULL, printTraitTable = FALSE, exportNA = FALSE, printDup = FALSE, exportFullFB = FALSE, printDupPairs = FALSE, exportDupPairs = FALSE, traitAliasList = NULL){
-	# c("plot_name", "trait", "value", "timestamp", "person", "location", "number")
-	# path = toCleanDir; printDup = TRUE; printTraitTable = FALSE; exportNA = FALSE; printDup = TRUE; exportFullFB = FALSE; printDupPairs = TRUE; exportDupPairs = FALSE
+readFieldBookDB <- function(path, ontology = NULL, printTraitTable = FALSE, exportNA = FALSE, printDup = FALSE, exportFullFB = FALSE, printDupPairs = FALSE, exportDupPairs = FALSE, traitAliasList = NULL, rmTrait = NULL){
+	# path = toCleanDir; printDup = TRUE; printTraitTable = FALSE; exportNA = FALSE; printDup = TRUE; exportFullFB = FALSE; printDupPairs = TRUE; exportDupPairs = FALSE; traitAliasList = traitAliases
+	keepVars <- c("plot_name", "trait", "value", "timestamp", "person", "location", "number")
 	if(file.exists(path) & !dir.exists(path)){
 		fb <- read.csv(file)	
 	} else if(file.exists(path) & dir.exists(path)) {
@@ -31,15 +31,36 @@ readFieldBookDB <- function(path, ontology = NULL, printTraitTable = FALSE, expo
 		
 		fbL <- list()
 		for(i in fbdb){
-			fbi <- read.csv(paste0(path, i))
+			fbi <- read.csv(paste0(path, i), skipNul = TRUE)
 			fbi$file <- i
 			names(fbi)[names(fbi) == "plotName"] <- "plot_name"
-			fbL[[i]] <- fbi
+			if("Plot" %in% names(fbi) & !"plot_name" %in% names(fbi)){
+			message("Someone used Plot number as the unique identifier rather than plot_name. Shame on them!")
+				trialID <- gsub("_database.csv$|[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}_", "", i)
+				print(paste0("Trial: ", trialID, "    Person: ", unique(fbi[["person"]])))
+				fbi[["plot_name"]] <- paste0(trialID, "_", fbi[["Plot"]])
+			} else if("acession_name" %in% names(fbi) & !"plot_name" %in% names(fbi)){
+				warning(paste0("acession_name was used as the unique identifier for ", i, "\nthis file will be ignored. please fixed externally, \nand double shame on whoever was stupid enough to use the line name as the unique identifier"))
+				next
+			} else if("row" %in% names(fbi) & !"plot_name" %in% names(fbi)){
+				warning(paste0("row was used as the unique identifier for ", i, "\nthis file will be ignored. please fixed externally, "))
+				next
+			} else if(!"plot_name" %in% names(fbi)){
+				warning("The following file did not have the unique identifier selected: \n", i, "\nPlease fix this file externally.")
+				message(paste0("This column may have been used as the unique identifier: ", names(fbi)[1]))
+			}
+			# names(fbi)
+			fbL[[i]] <- fbi[keepVars]
 		}
+		# table(sapply(fbL, length))
 		# unique(lapply(fbL, names))
 		fb <- do.call(rbind, fbL)
 		fb$trait <- gsub( " \\| ", "|", fb$trait)
-		
+		table(fb$trait)
+
+		if(!is.null(rmTrait)){
+			fb <- fb[!fb$trait %in% rmTrait]
+		}
 		if(!is.null(traitAliasList)){
 			for(i in names(traitAliasList)) {
 				fb$trait[fb$trait %in% traitAliasList[[i]]] <- i
@@ -71,56 +92,60 @@ readFieldBookDB <- function(path, ontology = NULL, printTraitTable = FALSE, expo
 		fb$recordNo <- 1:nrow(fb)
 		isPic <- grepl("\\.jpg$", fb$value)
 		dupRecConf <- duplicated(fb[c("plot_name", "trait")]) & !isPic
+		
 		fbdup <- fb[dupRecConf,]
-		if(printDupPairs){
-			fbdupPairs <- list()
-			for(i in 1:nrow(fbdup)){
-				fbdupPairs[[i]] <- fb[fb$plot_name %in% fbdup$plot_name[i] & fb$trait %in% fbdup$trait[i],]
-			}
-		}
-		# fb[fb$plot_name == "HRWPrelim_2022_WARVA_136",]		
-		# table(fb[dupRecConf,"trait"])
-		# head(fb[dupRecConf,], 20)
 
-		if(nrow(fbdup) < 11){
-			message("The following records are duplicates with conflicting values, assigning value of last timestamp...")
-			print(fbdup)
-		} else {
-			message(paste0(nrow(fbdup), " records are duplicates with conflicting values, assigning value of last timestamp. Use 'printDup' to print duplicated records"))
-			if(printDup) {
-				if(printDupPairs) {
-					print(fbdupPairs)
-				} else {
-					print(fbdup) 
+		if(nrow(fbdup) > 0){
+
+			if(printDupPairs){
+				fbdupPairs <- list()
+				for(i in 1:nrow(fbdup)){
+					fbdupPairs[[i]] <- fb[fb$plot_name %in% fbdup$plot_name[i] & fb$trait %in% fbdup$trait[i],]
 				}
 			}
-		}
+			# fb[fb$plot_name == "HRWPrelim_2022_WARVA_136",]		
+			# table(fb[dupRecConf,"trait"])
+			# head(fb[dupRecConf,], 20)
 
-		getLastRecord <- function(dupfbrec, returnRow = FALSE){
-			times <- as.POSIXlt(dupfbrec$timestamp) # need to check value type then concatenate if notes, and pick later time point if not notes. 
-			keep <- which(times == max(times))
-			if(returnRow) return(dupfbrec[keep,]) else return(keep)
-		}
-		dropRecords <- NULL
-		for(i in 1:nrow(fbdup)){
-			trait <- fbdup$trait[i]
-			dupRows <- which(fb$plot_name == fbdup$plot_name[i] & fb$trait == trait)
-			if(trait == "notes"){
-				fbd <- fb[dupRows, ]
-				allnotes <- paste0(gsub("\\s.*", "", fbd$timestamp), ": ", fb[dupRows, "value"])
-				fb[dupRows[1], "value"] <- paste(allnotes, collapse = "; ")
-				dropRecords <- c(dropRecords, dupRows[-1])
-			} else{
-				dropReci <- dupRows[!dupRows %in% dupRows[getLastRecord(fb[dupRows, ])]]
-				dropRecords <- c(dropRecords, dropReci)
+			if(nrow(fbdup) < 11){
+				message("The following records are duplicates with conflicting values, assigning value of last timestamp...")
+				print(fbdup)
+			} else {
+				message(paste0(nrow(fbdup), " records are duplicates with conflicting values, assigning value of last timestamp. Use 'printDup' to print duplicated records"))
+				if(printDup) {
+					if(printDupPairs) {
+						print(fbdupPairs)
+					} else {
+						print(fbdup) 
+					}
+				}
 			}
-			# fb <- fb[-dupRows[!dupRows %in% dupRows[getLastRecord(fb[dupRows, ])]],]
-		}
-		fb[dropRecords,]
-		fb <- fb[-dropRecords, ]
 
-		if(any(duplicated(fb[c("plot_name", "trait")]) & !grepl("\\.jpg$", fb$value))) warning("there are still duplicates! This shouldnt happen.")
-		
+			getLastRecord <- function(dupfbrec, returnRow = FALSE){
+				times <- as.POSIXlt(dupfbrec$timestamp) # need to check value type then concatenate if notes, and pick later time point if not notes. 
+				keep <- which(times == max(times))
+				if(returnRow) return(dupfbrec[keep,]) else return(keep)
+			}
+			dropRecords <- NULL
+			for(i in 1:nrow(fbdup)){
+				trait <- fbdup$trait[i]
+				dupRows <- which(fb$plot_name == fbdup$plot_name[i] & fb$trait == trait)
+				if(trait == "notes"){
+					fbd <- fb[dupRows, ]
+					allnotes <- paste0(gsub("\\s.*", "", fbd$timestamp), ": ", fb[dupRows, "value"])
+					fb[dupRows[1], "value"] <- paste(allnotes, collapse = "; ")
+					dropRecords <- c(dropRecords, dupRows[-1])
+				} else{
+					dropReci <- dupRows[!dupRows %in% dupRows[getLastRecord(fb[dupRows, ])]]
+					dropRecords <- c(dropRecords, dropReci)
+				}
+				# fb <- fb[-dupRows[!dupRows %in% dupRows[getLastRecord(fb[dupRows, ])]],]
+			}
+			# fb[dropRecords,]
+			fb <- fb[-dropRecords, ]
+
+			if(any(duplicated(fb[c("plot_name", "trait")]) & !grepl("\\.jpg$", fb$value))) warning("there are still duplicates! This shouldnt happen.")
+		}		
 	} else {
 		stop("path does not exist!")
 	}
