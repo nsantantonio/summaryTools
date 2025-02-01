@@ -17,7 +17,7 @@
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-xtable2 <- function(tab, aln = NULL, pad = 0,  digits = 2, caption = NULL, label = NULL, size = "footnotesize", footNotes = NULL, include.rownames = TRUE, formatColNames = TRUE, statsLine = TRUE, specialChars = c("#"), naReplace = "", ...){
+xtable2 <- function(tab, aln = NULL, pad = 0,  digits = 2, caption = NULL, label = NULL, size = "footnotesize", footNotes = NULL, include.rownames = TRUE, formatColNames = TRUE, statsLine = TRUE, specialChars = c("#", "_"), naReplace = "", ...){
 	# if numeric, shoudl round to something
 	# tab <- usnCheckSum[c(1, 2:16)]; pad = 0; digits = 2; aln = NULL; include.rownames = FALSE; formatColNames = TRUE; statsLine = TRUE; size = "footnotesize"; specialChars = c("#"); caption = NULL; label = NULL; size = "footnotesize"; footNotes = NULL; naReplace = ""
 	size <- paste0("\\", size)
