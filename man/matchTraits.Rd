@@ -4,7 +4,7 @@
 \alias{matchTraits}
 \title{matchTraits function}
 \usage{
-matchTraits(traitNames, traits)
+matchTraits(traitNames, traits, warnMultiple = TRUE)
 }
 \arguments{
 \item{traitNames}{character vector of trait names, typically as column names in a summary data.frame, these would often have a pipe, "|", and a unit, and possibly the number of environments in parentheses after the trait name which would prevent direct matching with more simple trait names, Example, "GrainYield|lb/ac (12)"}

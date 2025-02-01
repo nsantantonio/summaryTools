@@ -8,12 +8,12 @@
 #' @details [fill in details here]
 #' @examples # none
 #' @export
-matchTraits <- function(traitNames, traits){
+matchTraits <- function(traitNames, traits, warnMultiple = TRUE){
 	traits <- gsub("\\s|\\|.*", "", traits)
 	isMatch <- NULL
 	for(i in traitNames){
 		mch <- grepl(paste0("^", gsub("\\s|\\|.*", "", i)), traits)
-		if(sum(mch) > 1) warning("More than trait match! Unexpected results may occur")
+		if(sum(mch) > 1 & warnMultiple) warning("More than one trait match! Unexpected results may occur")
 		isMatch[i] <- any(mch) 
 	}
 	return(isMatch)
